@@ -1,0 +1,146 @@
+*Exit* Ennen kaninkoloon ryömimistä on hyvä tietää miten sieltä
+tullaan ulos. Emacs:in voi lopettaa Control-X Control-C
+näppäinsekvenssillä. (Emacs jargonilla tämä näppäinsekvessi ilmastaa
+C-x C-c)
+
+Muutama pointti näppäimistä:
+
+*Harjoitus* Lopeta emacs C-x C-c -näppäinsekvenssillä (ja käynnistä
+uudestaan, jos haluat vielä jatkaa :)
+
+Ja jatkuu ...
+
+*Control* ja *Meta* näppäimet
+
+- C- etuliite näppäimen edessä (esim. C-f) tarkoitaa Control
+  ohjausnäppäintä ja f kirjainta (ja se siirtää kursoria merkin
+  eteenpäin)
+
+- M-etuliite näppäimen edessä (esim. M-f, joka siirtää kursoria sana
+  kerralla eteenpäin) tarkoitaa META näppäintä, joka on tavallisesti
+  ALT näppäin (esimerkikssä painetaan ALT pohjaa ja sitten f). Metan
+  saa aikaiseksi myös näppäilemällä ensin ESC ja painamalla sitten
+  ko. näppäintä.
+
+*Kursorin liikuttelut*
+
+Kursorin liikuttelussa toimivat "normaalit" nuoli, home, end, PgUp ja
+PgDown näppäimet, mutta ergonomisempaa on opetella käyttämän emacs:in
+omia siirtymänäppäimiä:
+
+- C-p  : ylös
+- C-n  : alas
+- C-b  : taaksepäin
+- C-f  : eteenpäin
+
+META -näppäin tehostaa liikkumista:
+- M-b  : taaksepäin sana kerralla
+- M-f  : eteenpäin sana kerralla
+- M-<  : puskurin alkuun
+- M-> : puskurin loppuun (IMO tässä helpointa käyttää ESC >, koska
+  >-näppäin shiftin takana ja sormien osottaminen oikein yhtä'aikaa
+  kolmelle näppäimelle vaatii liian tarkkaa koordinaatiota)
+
+*Harjoitus* Tässä vaihessa noita kursorin liikuttelunäppäimiä on jo
+pakko käyttää (muuten teksti on piilossa)
+
+Emacs:ssa käytetään paljon Control -näppäintä, jonka normaali paikka
+on näppäimistössä vasemmalla alhalla. Jatkuvassa käytössä tuo paikka
+on vähän huono, koska pikkusormea joutuu taivuttamaan tavalla, joka
+piiitkään toistuessa rasittaa niveliä. Onneksi käyttöjärjestelmän
+asetuksista (ks. Google) voi CapLock -näppäimen mäpätä toimimaan
+Control -näppäimenä, jolloin rasitus pikkusormelle on
+vähäisempi. (tämän ehtii tehdä myöhemmin jos otat emacs:in jatkuvaan
+käyttöön :)
+
+*Abort C-g* (toinen tärkeistä näppäimistä, se toinen seuraavaksi esiteltävä C-h)
+
+Tärkeä näppäin on C-g (abort), jolla voi keskeyttää käynnissä olevan
+komennon. Aloittelija voi käynnistää jonkin komennon vahingossa, mutta
+myös kokeneemmalle käyttäjälle voi tulla näppäilyvihreitä, joten C-g:n
+hakkaamisesta tulee helposti tapa.
+
+*Help C-h* (periaatteessa C-g lisäksi toinen joka pitää muistaa;)
+
+Emacs on täynnä näppäilykomentoja, joista osa menee lihasmuistiin, osa
+löydettävä helpeistä ja paljon on sellaista mitä ei tarvitse
+tietää. Mitään ei tarvitse opella ulkoa vaan työkalun sisäiset helpit
+auttavat pitkälle. 
+
+Ennen harjoitusten aloittamista palauta vielä mieleen *Abort* ja
+*Exit* komennot. Noilla pääset pois, jos lähdet liian nopeasti
+eteenpäin ennen kuin ole oppinut liikkumaan buffereissa ;)
+
+*Harjoitus*: käynnistä help -moodi näppäinkomennolla C-h. Vähän ajan
+päästä näytön alariville ilmestyy teksti, jossa kerrotaan miten saat
+lisää ohjeita.  Keskeytä komento C-g näppäinkomennolla.
+
+*Harjoitus* käynnistä help moodi näppäinkomennolla C-h ja lue
+näytön alariville (vähän ajan kuluttua ilmestyvät) teksti. Siinä
+ohjeistetaan painamaan ?.
+
+- Paina ? niin viereen avatuu paneli, jossa esitetetään
+  lisävaihtoehtoja apujen etsimiseen. Tästäkin pääset vielä takaisin
+  C-g näppäin komennolla
+
+*Bufferit*
+
+Ennen seuraavaa harjoitusta on hyvä tietää emacs:in buffeista, miten
+ne saataan avattua ja miten niissä liikutaan. Peruskomennot ovat:
+
+
+- C-x o : other window (IMO parempi nimi olisi other buffer)
+- C-x 1 : delete other windows (IMO parempi nimi olisi close other buffers)
+- C-x 0 : delete window (parempi nimi IMO close current buffer)
+- C-x C-b: list-buffers 
+- C-x b : switch-to-buffer
+
+*Harjoitus* Bufferin (tässä help tekstin avaaminen). Paina C-h ? m
+(help, help on help, valitset help on mode ) TAI lyhyemmin C-h m
+(help, help on mode), jolloin tämän ikkunan viereen aukeaa ohjeteksti
+(buffer window), jossa esitellään tämän dokumetti-buffer 'moodit' ja
+listataan näppäinsekvenssit. Kursori jää tähän tutoriaalibufferiin ja
+voi sulkea helpin C-x 1 komnennolla.
+
+
+*Harjoitus* Avaa mode ohje C-h m, lue mitä siellä kerrotaan, siirry
+ohje bufferiin C-x o, avaa uudestaan mode ohje C-h m (ohje kertoo nyt
+help mode bufferin toiminnasta). On siis context-sensitiviinen. Jos
+luet ohjetta niin siellä pitäisi olla opastettu, että q sulkee mode
+ohjeen. (Jos ei onnistu niin sitten käytä noita puskurissa
+liikkumiskomentoja)
+
+*Harjoitus* Aja list-buffers C-x b, siirry bufferi listaan C-x o, mode
+ohje C-h m. q -kirjan sulkee listan,  RET valitsee bufferin.
+
+*Kill* *Yank* (=cut/copy ja paste)
+
+- C-space merkkaa kursorin kohdan, jonka jälkeen kursorin siirto maalaa alueen
+- C-w cut (kill-region emacs jargonilla)
+- M-w copy (copy-region-as-kill emacs jargonilla)
+- C-y paste (yank emacs jargnoissa)
+- C-k rivin lopun poistaminen (lisätään yank puskuriin)
+- M-u undo 
+
+*Dired* - tiedostojärjestelmän selaaminen
+
+Avaa nykyinen työhakemisto näppäinsekvenssillä C-x C-f ja kuittaa
+avatta hakemisto RET -näppäimillä. Pitäisi avautua ikkuna, jossa voit
+selata tiedostoja. Paras ohje jälleen "mode ohjeella (C-h m)
+
+Muutama hyödyllinen nosto dired-modesta:
+- "normaalit" kursorinliikuttelut toimivat
+- s : sortaa aika-/nimijärjestys
+- f : avaa tiedoston/hakemiston
+- W : käynnistää käyttöjärjestelmän oletustoiminnon (esim. avaa
+  selaimen html tiedostolle)
+
+*Linkkien avaaminen*
+
+Linkkien avaaminen tapahtuu C-c C-o näppäinsekvenssillä:
+
+Esimerkiksi C-c C-o 
+- linkkiin [[file:README.org]] avaa tutoriaalin README -tiedoston uuteen
+  emacs bufferiin
+- linkkiin http://www.google.com avaa selaimen
+

@@ -1,0 +1,962 @@
+Primer  *emacs with org-mode*.
+
+Quote from https://orgmode.org/manual/Document-Structure.html
+
+#+begin_quote
+Org is an outliner. Outlines allow a document to be organized in a
+hierarchical structure, which, least for me, is the best
+representation of notes and thoughts.
+
+An overview of this structure is achieved by folding, i.e., hiding
+large parts of the document to show only the general document
+structure and the parts currently being worked on. 
+#+end_quote
+
+This document gives an opinionated short introduction to org-mode in
+emacs. For Help/more documentation for org-mode:
+- C-h M : short description and (an overwheling list of key bindings -
+  not all of the actually that usefull )
+- C-h I : search/user cursor to line with 'Org Mode' 
+
+*This primer assumes that is run in empty emacs content*
+
+In the primer repo issue the following command:
+#+begin_example
+emacs -q -l demo-init.el emacs-demo.org
+#+end_example
+
+or simply run
+
+#+begin_example
+./emacs-tut.sh org-primer.org
+#+end_example
+
+To open/close: outline 
+- TAB: cycle open outline level/open content/close outline for the
+  hierarchy under cursor
+- SHIFT-TAB: cycle open/close all all document hierarchies
+
+
+* Org-mode primer
+** emacs/org-mode speaks natively lisp
+Natively emacs speaks only lisp. Other languages need to be activated
+and possibly extension should be loaded to support the language.
+
+*** Example: Hello world (lisp version)
+
+ Press C-c C-c within BEGIN_SRC END_SRC lines below (in default
+ settings emacs ask for confirmation )
+ 
+ #+BEGIN_SRC elisp :eval no-export
+ "Hello world - from lisp block"
+ #+END_SRC
+
+*** Example: Hello world  w. parameter (lisp version)
+
+Create a named ~hello-whom~ source block accepting parameter
+~WHOM~. Give a name ~hello-whom~ to the source block
+
+ #+name: hello-whom
+ #+BEGIN_SRC elisp :var WHOM="world"
+ (concat "Hello " WHOM "!")
+ #+END_SRC
+
+ #+RESULTS: hello-whom
+ : Hello world!
+
+#+call: hello-whom(WHOM="moon")
+
+#+RESULTS:
+: Hello moon!
+
+** Hint: formatting in org documents
+
+Org mode supports simple formattig support:
+
+- tilde character around text marks ~code~ format
+- also equal signs around text mark =code= format
+- /italics/ with slash character
+- *bold* with asterisks
+
+** ~org-confirm-babel-evaluate~: confirmation in source block evaluation 
+
+To turn confirmation off (in current emacs session) by setting
+variable 'org-confirm-babel-evaluate' to nil.
+
+#+BEGIN_SRC elisp :eval no-export
+(setq org-confirm-babel-evaluate nil)
+#+END_SRC
+
+#+RESULTS:
+
+Once confirmation is inhibited, evaulatin source code block C-c C-c 
+does not require confirmation. 
+
+*Exercise* rerun the source block below, and observe that confirmation
+is not required anymore.
+
+#+BEGIN_SRC elisp :eval no-export
+"Hello again"
+#+END_SRC
+
+#+RESULTS:
+: Hello again
+
+** ~describe-variable~ Access variable documentation
+
+You may show variable documentation using ~C-h v~ keyboard sequence.
+
+*Exercise* use ~C-h v~ to read documentation of variable
+~org-confirm-babel-evaluate~.
+
+~C-h b~ buffer show keyboard bindings, and searching in that buffer for
+~C-h v~ you find it is bound to function ~describe-variable~.
+
+*Exercise* run ~C-c C-c~ on source block to access documentation of
+variable ~org-confirm-babel-evaluate~.
+
+#+BEGIN_SRC elisp :eval no-export
+(describe-variable 'org-confirm-babel-evaluate)
+#+END_SRC
+
+** Setting some usefull (essential) confgurations in emacs
+
+Instruct emacs:
+- not make backup files
+- to silence annoying bell
+- match opening bracets, braces etc with closing one
+- create key binding ~C-x '~ to compare two windows (comparison halts
+  with first difference)
+
+
+#+BEGIN_SRC elisp :eval no-export
+;; No backups there
+(setq make-backup-files nil)
+
+;; No sound for C-g (disable annoying beeps)
+(setq ring-bell-function 'ignore)
+(setq visible-bell t)
+
+ 
+;; No tool bar
+;; (tool-bar-mode -1)
+(tool-bar-mode t)
+
+;; balanced brackets etc
+(electric-pair-mode t)
+
+;; simple yet effective diffi
+(global-set-key (kbd "C-x '") 'compare-windows)
+#+END_SRC
+
+#+RESULTS:
+: compare-windows
+
+** Demo: shell support in emacs org source block
+This section introduces shell support in emacs org.
+*** Hello World (shell version)
+ 
+ Below is shell scrip hello world version. Initially (in vanilla emacs
+ setup), it reports an error ~org-babel-execute function for shell~
+ because shell scripting is not activated
+
+ #+name: hello-world-shell
+ #+BEGIN_SRC shell
+ echo Hello world from shell
+ #+END_SRC
+
+The source block is given a name ~hello-world-shell~, which we make a
+call to in the next section.
+
+*** Configuring emacs: Enable shell language in emacs
+
+Support for shell -language can be added with the lisp source block
+below (C-c C-c source block)
+
+#+BEGIN_SRC elisp :eval no-export
+ (org-babel-do-load-languages
+  'org-babel-load-languages
+   '( 
+      (shell . t)
+      (emacs-lisp . t)   ;; default
+      ))
+#+END_SRC
+
+#+RESULTS:
+
+Once shell -language is actiaved call to ~hello-world-shell~
+succeeds. Notice that here we are making a call to named source block
+~hello-world-shell~.
+#+call: hello-world-shell()
+
+#+RESULTS:
+: Hello world from shell
+
+** Show ~user-emacs-directory~ mapped to ~/work/emacs.d/tmp~
+
+In this primer, we assumme an empty emacs configuration. Also we do
+not want override any existing configration in directory
+=~/.emacs.d/=.
+
+Documentation for variable ~user-emacs-directory~ extracted with
+source block
+
+#+BEGIN_SRC elisp :eval no-export
+(describe-variable 'user-emacs-directory)
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+user-emacs-directory is a variable defined in ‘subr.el’.
+Its value is "~/work/emacs-tut/tmp"
+
+  Probably introduced at or before Emacs version 22.1.
+
+Documentation:
+Directory beneath which additional per-user Emacs-specific files are placed.
+Various programs in Emacs store information in this directory.
+Note that this should end with a directory separator.
+See also ‘locate-user-emacs-file’.
+#+end_example
+
+
+*Exercise* The documention above (refresshed with ~C-c C-c~ shows
+current value of variable, just to be on safe side show the value
+using the sourcve block below, and ensure that it is not =~/.emacs.d/=
+
+ #+BEGIN_SRC elisp
+ user-emacs-directory
+ #+END_SRC
+
+ #+RESULTS:
+ : ~/work/emacs-tut/tmp
+
+** Adding Configuring emacs
+*** ~use-package~: isolate package configurations
+
+ Ref. [[https://github.com/jwiegley/use-package]]
+
+ #+BEGIN_QUOTE
+ The use-package macro allows you to isolate package configuration in
+ your .emacs file in a way that is both performance-oriented and, well,
+ tidy
+
+ #+END_QUOTE
+
+ Add repositories as instructed in
+ https://www.emacswiki.org/emacs/ELPA. Install use-package, unless it
+ is already installed.
+
+
+ #+BEGIN_SRC elisp
+   ;; Packages: https://www.emacswiki.org/emacs/ELPA
+   (package-initialize)
+   (require 'package)
+   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+   (add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/"))
+   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; Org-mode's repository
+
+   (unless (package-installed-p 'use-package)
+     (package-refresh-contents)
+     (package-install 'use-package)
+   )
+
+   (setq use-package-always-ensure t)
+   ;; (require 'use-package)
+   ;; ;; To activate
+   ;; ;; - enable command-log-mode in buffer
+   ;; ;; - run clm/toggle-command-log-buffer
+   ;; (use-package command-log-mode)
+ #+END_SRC
+
+ #+RESULTS:
+ : t
+
+*** ~undo-tree~ - C-z keybinding
+
+Undo mechamism, which comes bundled with emacs is somewhat
+convoluted. Following snippet more intuitive way for backtracking.
+
+Ref: [[https://elpa.gnu.org/packages/undo-tree.html]]
+
+#+BEGIN_SRC elisp
+
+    (use-package undo-tree
+      :ensure t
+      :init
+      (global-undo-tree-mode)
+      )
+
+  (global-set-key (kbd "C-z") 'undo)
+  ;; make ctrl-Z redo
+  (defalias 'redo 'undo-tree-redo)
+  (global-set-key (kbd "C-S-z") 'redo)
+  
+#+END_SRC
+
+#+RESULTS:
+: redo
+
+Now:
+- C-z : undo
+- C-S-z : redo
+- C-x U : undo tree
+
+#+RESULTS:
+: redo
+
+*** ~org-mode~: language support & tangle helper
+
+Home page: https://orgmode.org/
+
+#+BEGIN_QUOTE
+A GNU Emacs major mode for keeping notes, authoring documents,
+computational notebooks, literate programming, maintaining to-do
+lists, planning projects, and more — in a fast and effective plain
+text system.
+#+END_QUOTE
+
+#+BEGIN_SRC elisp
+  (use-package org
+    :bind (("C-c b" . org-babel-tangle-block))
+    :config
+    (defun org-babel-tangle-block()
+      (interactive)
+      (let ((current-prefix-arg '(4)))
+	(call-interactively 'org-babel-tangle)
+	))
+    :custom
+    ;; customize languages which can be evaluated in Org buffers.
+    (org-babel-load-languages	'(
+	(shell . t)
+	(emacs-lisp . t)))
+  )
+#+END_SRC
+
+#+RESULTS:
+: org-babel-tangle-block
+
+
+The code above defines key binging ~C-c b~ to run lisp function
+~org-babel-tangle-block~, which writes block under point to a
+file. See example below.
+
+*** Example: Output source block to file: tangle
+
+Define a named source block ~ls-tmp~ to show content of ~tmp~
+-directory
+#+name: ls-tmp
+#+BEGIN_SRC bash :eval no-export :results output
+ls -ltr tmp
+#+END_SRC
+
+
+Expect that initially there is not a file ~demo.txt~ in ~tmp~ -
+directory.
+
+#+RESULTS: ls-tmp
+: total 107
+: drwxrwxr-x  3 jj jj     3 kesä    4 10:41 snippets
+: -rw-rw-r--  1 jj jj 27504 kesä    4 14:45 demo2.png
+: -rw-rw-r--  1 jj jj 27504 kesä    4 14:47 deployment.png
+: drwxrwxr-x 19 jj jj    21 kesä    4 17:00 elpa
+: -rw-rw-r--  1 jj jj  1123 kesä    4 17:01 tramp
+: -rw-rw-r--  1 jj jj 27504 kesä    4 17:03 plantuml-demo1.png
+: -rw-------  1 jj jj   351 kesä    4 18:02 recentf
+
+
+
+*Exercise* Move point (=cursor) to the source block below and use key
+binding ~C-c b~ to tangle (=output) file ~tmp/demo.txt~. ~C-c b~
+-keybinding was defined earlier, when configuring org-mode.
+
+#+begin_src txt :tangle tmp/demo.txt
+Tangled from org-primer - CHANGES WILL BE OVERRIDDEN
+#+end_src
+
+
+Rerun ls-tmp, and expect to see ~tmp/demo.txt~ -file created.
+#+call: ls-tmp()
+
+#+RESULTS:
+: total 108
+: drwxrwxr-x  3 jj jj     3 kesä    4 10:41 snippets
+: -rw-rw-r--  1 jj jj 27504 kesä    4 14:45 demo2.png
+: -rw-rw-r--  1 jj jj 27504 kesä    4 14:47 deployment.png
+: drwxrwxr-x 19 jj jj    21 kesä    4 17:00 elpa
+: -rw-rw-r--  1 jj jj  1123 kesä    4 17:01 tramp
+: -rw-rw-r--  1 jj jj 27504 kesä    4 17:03 plantuml-demo1.png
+: -rw-------  1 jj jj   351 kesä    4 18:02 recentf
+: -rw-rw-r--  1 jj jj    53 kesä    4 22:06 demo.txt
+
+Cleanup demo file (for the next round :)
+#+BEGIN_SRC bash :eval no-export :results output
+rm -f tmp/demo.txt
+#+END_SRC
+
+#+RESULTS:
+
+*** ~yas-snippet~: 
+    :PROPERTIES:
+    :CUSTOM_ID: config-yas-snippet
+    :END:
+
+Ref: https://github.com/joaotavora/yasnippet
+
+#+BEGIN_QUOTE
+YASnippet is a template system for Emacs. It allows you to type an
+abbreviation and automatically expand it into function
+templates. Bundled language templates include: C, C++, C#, Perl,
+Python, Ruby, SQL, LaTeX, HTML, CSS and more
+#+END_QUOTE
+
+Example configuration:
+https://www.reddit.com/r/emacs/comments/9bvawd/use_yasnippet_via_usepackage/
+
+#+BEGIN_SRC elisp
+(use-package yasnippet
+ :ensure t
+ :config
+ (yas-global-mode t)
+ (use-package yasnippet-snippets
+ :ensure t)
+ (define-key yas-minor-mode-map (kbd "<C-tab>") 'yas-expand)
+ (define-key yas-minor-mode-map (kbd "<C-S-tab>") 'yas-expand)
+ )
+#+END_SRC
+
+#+RESULTS:
+: t
+
+*** Ensure directory ~tmp/snippets/org-mode~ exists
+
+#+BEGIN_SRC bash
+[ -d tmp/snippets/org-mode ] || mkdir -p tmp/snippets/org-mode
+#+END_SRC
+
+#+RESULTS:
+
+
+#+BEGIN_SRC bash :eval no-export :results output
+ls -ltr tmp/snippets/org-mode
+#+END_SRC
+
+#+RESULTS:
+: total 5
+: -rw-rw-r-- 1 jj jj 127 kesä    4 10:45 src-bash
+
+*** Tangle some yas-snippets
+
+**** src-bash
+
+Tangle following source block into file
+~tmp/snippets/org-mode/src-bash~. (Notice somewhat dirtyish trick of
+using ,-character to escape first #+END_SRC line.
+
+ #+begin_src txt :tangle tmp/snippets/org-mode/src-bash
+ # -*- mode: snippet -*-
+ # name: src-bash
+ # key: src-bash
+ # --
+
+
+ #+BEGIN_SRC bash :eval no-export :results output
+ $0
+ ,#+END_SRC
+ #+end_src
+
+ Load yas snippets by executing ~C-c C-c~ following source block. You
+ may also load yas snippets by running ~M-x~ and typing
+ ~yas-reload-all~ to the prompt for function to execute
+ #+name: yas-reload
+ #+BEGIN_SRC elisp :eval no-export
+ (yas-reload-all)
+ #+END_SRC
+
+ #+RESULTS: yas-reload
+ : [yas] Prepared just-in-time loading of snippets successfully.
+
+
+Now, after typing ~src-bash~ followed by ~TAB~ should expand to source
+block for running shell scripts within emacs. 
+
+Try it below
+src-bash
+
+**** ~src-lisp~ -yas-snippet
+
+Tangle following source block with ~C-c b~
+#+begin_src txt :tangle tmp/snippets/org-mode/src-lisp
+# -*- mode: snippet -*-
+# name: src-lisp
+# key: src-lisp
+# --
+
+
+#+BEGIN_SRC elisp :eval no-export
+$0
+,#+END_SRC
+
+#+end_src
+
+Make emacs aware of the newly tangled snippet. (Run ~C-c C-c~ on the
+~#+call:~ -line)
+
+#+call: yas-reload()
+
+#+RESULTS:
+: [yas] Prepared just-in-time loading of snippets successfully.
+
+Test: press TAB end of the line below
+src-lisp
+
+
+*** ~plantuml-mode~: PlantUML is a component that allows you to quickly diagrams
+
+Ref: 
+- https://github.com/skuro/plantuml-mode
+
+
+Tutorial repo contains planuml.jar in jar directory, as show below
+
+#+BEGIN_SRC bash :eval no-export :results output
+ls -ltr jar
+#+END_SRC
+
+#+RESULTS:
+: plantuml-jar-mit-1.2023.7.jar
+
+Activate plantuml support with the following lisp-snippet pointing to
+the jar -file in repo directory ~jar~. Config section is instructed in
+https://plantuml.com/emacs
+
+#+begin_src elisp :eval no-export
+  ;; A major mode for editing PlantUML sources in Emacs
+  (use-package plantuml-mode
+    :after org
+    :config
+    ;; Instructions from https://plantuml.com/emacs
+    (setq org-plantuml-jar-path (expand-file-name "jar/plantuml-jar-mit-1.2023.7.jar"))
+    (setq plantuml-jar-path (expand-file-name "jar/plantuml-jar-mit-1.2023.7.jar"))
+    (setq plantuml-default-exec-mode 'jar)
+    (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+    (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+    )
+#+end_src
+
+#+RESULTS:
+: t
+
+
+Example for for UML deployment diagrams found in
+https://plantuml.com/deployment-diagram
+
+#+name: plantuml-demo1
+#+BEGIN_SRC plantuml :eval no-export :exports results :file tmp/plantuml-demo1.png
+  actor actor
+  actor/ "actor/"
+  agent agent
+  artifact artifact
+  boundary boundary
+  card card
+  circle circle
+  cloud cloud
+  collections collections
+  component component
+  control control
+  database database
+  entity entity
+  file file
+  folder folder
+  frame frame
+  hexagon hexagon
+  interface interface
+  label label
+  node node
+  package package
+  person person
+  queue queue
+  rectangle rectangle
+  stack stack
+  storage storage
+  usecase usecase
+  usecase/ "usecase/"
+#+END_SRC
+
+#+RESULTS: plantuml-demo1
+[[file:tmp/plantuml-demo1.png]]
+
+
+Tangle ~img-deployment~ yas-snippet block with ~C-c b~. Notice that
+the snippet defines two expansion variables. Variable ~$1~ defines
+image name defaults to ~deployment~. Variable ~$2~ gives output
+directory and default to ~tmp~.
+
+#+begin_src txt :tangle tmp/snippets/org-mode/img-deployment
+# -*- mode: snippet -*-
+# name: img-deployment
+# key: img-deployment
+# --
+
+#+name: ${1:deployment}
+#+BEGIN_SRC plantuml :eval no-export :exports results :file ${2:tmp}/$1.png
+  actor actor
+  actor/ "actor/"
+  agent agent
+  artifact artifact
+  boundary boundary
+  card card
+  circle circle
+  cloud cloud
+  collections collections
+  component component
+  control control
+  database database
+  entity entity
+  file file
+  folder folder
+  frame frame
+  hexagon hexagon
+  interface interface
+  label label
+  node node
+  package package
+  person person
+  queue queue
+  rectangle rectangle
+  stack stack
+  storage storage
+  usecase usecase
+  usecase/ "usecase/"
+,#+END_SRC
+#+end_src
+
+After tanling, reload yas-snippets by calling yas-reload
+#+call: yas-reload()
+
+#+RESULTS:
+: [yas] Prepared just-in-time loading of snippets successfully.
+
+
+Press ~TAB~ end of next line to create yas-snippet.
+img-deployment
+
+**** ~org-var~:  Add property drawer defining header variable
+
+ #+begin_src txt :tangle tmp/snippets/org-mode/org-var
+# -*- mode: snippet -*-
+# name: org-var
+# key: org-var
+# --
+:PROPERTIES:
+:header-args+:   :var  ${1:NAME}="${2:value}"
+:END:
+
+$0
+ #+end_src
+
+
+ #+call: yas-reload()
+
+ #+RESULTS:
+ : [yas] Prepared just-in-time loading of snippets successfully.
+
+***** Test
+
+
+Type ~org-var~ followed by ~TAB~, just below heading test. Accept
+default values to define variable ~NAME~.  
+
+
+Test variable value by executing the source block below.
+#+BEGIN_SRC bash :eval no-export :results output 
+echo NAME=$NAME
+#+END_SRC
+
+** Example: Source block directives: dir
+
+Define source named source block ~pwd-ls~, which outputs current
+working directory and show its content.
+
+#+name: pwd-ls
+#+BEGIN_SRC bash :eval no-export :results output
+pwd
+ls -l
+#+END_SRC
+
+Expect to see directory where this tutorial is located. Particulary,
+notice that there also a directory ~tmp~
+
+#+RESULTS: pwd-ls
+#+begin_example
+/home/jj/work/emacs-tut
+total 40
+-rw-rw-r-- 1 jj jj   137 kesä    3 11:28 demo-init.el
+-rw-rw-r-- 1 jj jj  5359 kesä    3 19:34 emacs-primer.org
+-rwxr-xr-x 1 jj jj    40 kesä    4 10:11 emacs-tut.sh
+-rw-rw-r-- 1 jj jj 14373 kesä    4 14:39 org-primer.org
+-rw-rw-r-- 1 jj jj 11218 kesä    4 10:50 org-primer.org~
+-rw-rw-r-- 1 jj jj    55 kesä    3 11:18 README.md
+-rw-rw-r-- 1 jj jj    59 kesä    3 11:19 README.org
+drwxrwxr-x 4 jj jj     6 kesä    4 14:33 tmp
+#+end_example
+
+
+Define un-named source block, with the same commands as the named
+source block ~pwd-ls~. However, this source block adds the header
+directive ~:dir tmp~.  As of the effect, this source block runs in
+~tmp~ directory:
+
+#+BEGIN_SRC bash :eval no-export :results output :dir tmp
+pwd
+ls 
+#+END_SRC
+
+#+RESULTS:
+: /home/jj/work/emacs-tut/tmp
+: demo2.png
+: deployment.png
+: elpa
+: plantuml-demo1.png
+: recentf
+: snippets
+: tramp
+
+Header directives can be added also source block calls. Calling
+~pwd-ls~ works in current working directory.
+
+#+call: pwd-ls()
+
+#+RESULTS:
+#+begin_example
+/home/jj/work/emacs-tut
+total 64
+-rw-rw-r-- 1 jj jj   137 kesä    3 11:28 demo-init.el
+-rw-rw-r-- 1 jj jj     4 kesä    4 18:01 emacs-admin.org
+-rw-rw-r-- 1 jj jj  5853 kesä    4 21:33 emacs-primer.org
+-rw-rw-r-- 1 jj jj  5810 kesä    4 21:17 emacs-primer.org~
+-rwxr-xr-x 1 jj jj   210 kesä    4 18:06 emacs-tut.sh
+-rwxr-xr-x 1 jj jj    40 kesä    4 10:11 emacs-tut.sh~
+drwxrwxr-x 2 jj jj     3 kesä    4 14:57 jar
+-rw-rw-r-- 1 jj jj 23116 kesä    4 22:09 org-primer.org
+-rw-rw-r-- 1 jj jj 22057 kesä    4 21:59 org-primer.org~
+-rw-rw-r-- 1 jj jj    55 kesä    3 11:18 README.md
+-rw-rw-r-- 1 jj jj   440 kesä    4 17:43 README.org
+drwxrwxr-x 4 jj jj    10 kesä    4 22:06 tmp
+#+end_example
+
+
+The example belos calls named source block ~pwd-ls~ in the context of
+directory ~tmp~:
+
+#+call: pwd-ls[:dir tmp]()
+
+#+RESULTS:
+: /home/jj/work/emacs-tut/tmp
+: total 107
+: -rw-rw-r--  1 jj jj 27504 kesä    4 14:45 demo2.png
+: -rw-rw-r--  1 jj jj 27504 kesä    4 14:47 deployment.png
+: drwxrwxr-x 19 jj jj    21 kesä    4 17:00 elpa
+: -rw-rw-r--  1 jj jj 27504 kesä    4 17:03 plantuml-demo1.png
+: -rw-------  1 jj jj   351 kesä    4 18:02 recentf
+: drwxrwxr-x  3 jj jj     3 kesä    4 10:41 snippets
+: -rw-rw-r--  1 jj jj  1123 kesä    4 17:01 tramp
+
+** Example: running source block on host machine
+:PROPERTIES:
+:header-args+: :var  IP="192.168.100.100"
+:END:
+
+This chapter presents, how source block ~:dir~ -directive can even
+make the source block to execute in a different machine.
+
+In this example we are accessing service with the IP address given in
+the /property drawer/ above. Configure IP address to machine, which
+you have access to.
+
+*** Ping IP
+
+Show the IP -address we are using:
+
+#+BEGIN_SRC bash :eval no-export :results output
+echo IP=$IP
+#+END_SRC
+
+#+RESULTS:
+: IP=192.168.100.100
+
+Pinging to machine to see that we have TCP/IP connection to it.
+
+#+BEGIN_SRC bash :eval no-export :results output
+ping -c 3 $IP
+#+END_SRC
+
+#+RESULTS:
+: PING 192.168.100.100 (192.168.100.100) 56(84) bytes of data.
+: 64 bytes from 192.168.100.100: icmp_seq=1 ttl=64 time=8.65 ms
+: 64 bytes from 192.168.100.100: icmp_seq=2 ttl=64 time=14.6 ms
+: 64 bytes from 192.168.100.100: icmp_seq=3 ttl=64 time=9.72 ms
+: 
+: --- 192.168.100.100 ping statistics ---
+: 3 packets transmitted, 3 received, 0% packet loss, time 2004ms
+: rtt min/avg/max/mdev = 8.646/10.978/14.568/2.575 ms
+
+*** ~src-sed~
+
+
+We create a yas-snippet to edit file. The script keeps editions
+wrapped with comment lines to help replacing the changes.
+
+Tangle the snippet with ~C-c B~
+#+begin_src txt :tangle tmp/snippets/org-mode/src-sed
+# -*- mode: snippet -*-
+# name: src-sed
+# key: src-sed
+# --
+
+#+BEGIN_SRC bash :eval no-export :results output
+FILE=${1:file_to_edit}
+START="`(concat "added from org-document " (buffer-name) " - start")`"
+END="`(concat "added from org-document " (buffer-name) " - end")`"
+
+echo "modifying $FILE on host '$(hostname)'"
+
+sed -i -e "/$START/,/$END/d" $FILE
+
+cat <<HERE | tee -a $FILE
+# $START
+$0
+# $END
+HERE
+
+,#+END_SRC
+
+#+end_src
+
+
+#+call: yas-reload()
+
+#+RESULTS:
+: [yas] Prepared just-in-time loading of snippets successfully.
+
+*** ~tramp~ with source blocks
+
+Emacs comes bundled with TRAMP https://www.gnu.org/software/tramp/
+
+#+begin_quote
+TRAMP stands for “Transparent Remote (file) Access, Multiple Protocol”
+#+end_quote
+
+
+#+RESULTS:
+: [yas] Prepared just-in-time loading of snippets successfully.
+
+Call yas-sinnet ~src-sed~ to add section defining ssh alias ~demo_ip~
+in ~/.ssh/config~
+
+#+BEGIN_SRC bash :eval no-export :results output
+FILE=~/.ssh/config
+START="added from org-document org-primer.org - start"
+END="added from org-document org-primer.org - end"
+
+echo "modifying $FILE on host '$(hostname)'"
+
+sed -i -e "/$START/,/$END/d" $FILE
+
+cat <<HERE | tee -a $FILE
+# $START
+host jrr1
+     user pi
+     IdentityFile ~/.ssh/id_rsa
+     hostname 192.168.100.100
+# $END
+HERE
+
+#+END_SRC
+
+#+RESULTS:
+: modifying /home/jj/.ssh/config on host 'eero'
+: # added from org-document org-primer.org - start
+: host jrr1
+:      user pi
+:      IdentityFile ~/.ssh/id_rsa
+:      hostname 192.168.100.100
+: # added from org-document org-primer.org - end
+
+
+Create named source block ~tramp-greeting~
+
+#+name: tramp-greeting
+#+BEGIN_SRC bash :eval no-export :results output :var WHOM="world"
+echo Greetings to $WHOM from $(hostname) on $(date)
+#+END_SRC
+
+#+RESULTS: tramp-greeting
+: Greetings to world from eero on su 4.6.2023 16.51.37 +0300
+
+
+Assuming that you have distributed =~/.ssh/id_rsa= -identity to
+machine in ~$IP~ -address, e.g. using a command such as
+
+#+begin_example
+ssh-copy-id -i ~/.ssh/id_rsa pi@$IP
+#+end_example
+
+then calling source block using ~:dir /ssh:jrr1:~ -directive and
+variable ~WHOM="moon"~ is run on ~$IP~ -address:
+
+#+call: tramp-greeting[:dir /ssh:jrr1:](WHOM="moon")
+
+#+RESULTS:
+: Greetings to moon from jrr1 on Sun Jun 4 16:55:55 EEST 2023
+
+*** TODO ~tramp~ with dir
+
+#+BEGIN_SRC elisp :eval no-export
+(dired ".")
+#+END_SRC
+
+#+RESULTS:
+: #<buffer emacs-tut>
+
+** ~ivy~: generic completion mechanism for Emacs
+
+#+begin_quote
+Ivy is a generic completion mechanism for Emacs. While it operates
+similarly to other completion schemes such as icomplete-mode, Ivy aims
+to be more efficient, smaller, simpler, and smoother to use yet highly
+customizable.
+#+end_quote
+
+References:
+- Ivy generic completion mechanism for Emacs: https://github.com/abo-abo/swiper
+- Counsel: a collection of Ivy-enhanced versions of common Emacs commands: https://elpa.gnu.org/packages/counsel.html
+- Ref: https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
+
+#+BEGIN_SRC elisp :eval no-export
+(use-package counsel
+  :after ivy
+  :config (counsel-mode))
+
+;; - diminish - keep ivy out of modeline
+(use-package ivy
+  :defer 0.1
+  :diminish
+  :bind (("C-c C-r" . ivy-resume)
+         ("C-x B" . ivy-switch-buffer-other-window))
+  :custom
+  (ivy-count-format "(%d/%d) ")
+  (ivy-use-virtual-buffers t)
+  :config (ivy-mode 1))
+
+#+END_SRC
+
+#+RESULTS:
+: ivy-switch-buffer-other-window
+
+Try:
+- ~C-x C-f~: file completion list
+- ~M-x~: function completions with partial match eg. ~yas sn~ lists
+  commands with matches
+
+  q

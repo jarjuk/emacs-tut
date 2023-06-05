@@ -1,5 +1,5 @@
 Primer  *emacs with org-mode*.
->
+
 Quote from https://orgmode.org/manual/Document-Structure.html
 
 #+begin_quote
@@ -122,7 +122,7 @@ is not required anymore.
 #+RESULTS:
 : Hello again
 
-** ~describe-variable~ Access variable documentation
+** ~describe-variable~ et. al: Find documentation
 
 You may show variable documentation using ~C-h v~ keyboard sequence.
 
@@ -136,42 +136,26 @@ of ~org-confirm-babel-evaluate~ -variable.
 (describe-variable 'org-confirm-babel-evaluate)
 #+END_SRC
 
-~C-h b~ buffer show keyboard bindings, and searching in that buffer for
-~C-h v~ you find it is bound to function ~describe-variable~.
+*Exercise*:  Find function bound to ~C-h v~:
+- Use ~C-h b~ to open buffer showing keyboard bindings, 
+- in that buffer search for line with ~C-h v~ 
+- on that line you find it is bound to function ~describe-variable~.
 
-*Exercise* Use ~C-h f~ o find documentation for the function
-~describe-variable~.
+*Exercise* Use ~C-h f~ o find documentation for ~describe-variable~
+function.
 
-*Exercise* Find the documentation of the function ~describe-variable~
-using the source block below (=use ~C-c C-c~ to evaluate the source block)
+*Exercise* Find the same documentation as in the previous exercise
+using lisp snippet below (=use ~C-c C-c~ to evaluate the source block below)
 
 #+BEGIN_SRC elisp :eval no-export 
 (describe-function 'describe-variable)
 #+END_SRC
 
-#+RESULTS:
-#+begin_example
-describe-variable is an autoloaded interactive compiled Lisp function
-in ‘help-fns.el’.
-
-Its keys are remapped to ‘counsel-describe-variable’.  Without this
-remapping, it would be bound to C-h v, <f1> v, <help> v, <menu-bar>
-<help-menu> <describe> <describe-variable>.
-
-(describe-variable VARIABLE &optional BUFFER FRAME)
-
-Display the full documentation of VARIABLE (a symbol).
-Returns the documentation as a string, also.
-If VARIABLE has a buffer-local value in BUFFER or FRAME
-(default to the current buffer and current frame),
-it is displayed along with the global value.
-#+end_example
-
 ** Some usefull (=essential?) emacs confgurations
 
 Following lisp snippet instructs emacs
 - not to make backup files
-- to silence annoying bell
+- to silence that annoying bell
 - to match opening bracets, braces etc with closing ones
 - to create key binding ~C-x '~ to compare two windows (comparison halts
   with first difference)
@@ -204,19 +188,18 @@ Following lisp snippet instructs emacs
 This section introduces shell support in emacs org.
 *** Hello World (shell version)
  
- Below is shell scrip hello world version. Initially (in vanilla emacs
- setup), it reports an error ~no org-babel-execute function for shell~
- because shell scripting is not activated
+ Below is shell hello shell source block. Initially (in vanilla emacs
+ setup), it reports an error ~no org-babel-execute function for shell~.
 
  #+name: hello-world-shell
  #+BEGIN_SRC shell
  echo Hello world from shell
  #+END_SRC
 
-*Notice*, that the source block is given a name ~hello-world-shell~,
-which we make a call to in the next section.
+*Notice*, that the source block is given a name ~hello-world-shell~.
+We are going to call it in the next section.
 
-*** Configuring emacs: Enable shell language in emacs
+*** Enable shell language in emacs
 
 Support for shell -language can be added with the lisp source block
 below (C-c C-c source block)
@@ -232,15 +215,15 @@ below (C-c C-c source block)
 
 #+RESULTS:
 
-Once shell -language is actiaved evaluation of ~hello-world-shell~
--source block succeeds. Here we are calling to a named source block
-~hello-world-shell~.
+Once support for shell -language is activated, evaluation of
+~hello-world-shell~ -source block succeeds. (Move cursor on the
+~#+call:~ -line below, and press ~C-c C-c~
 #+call: hello-world-shell()
 
 #+RESULTS:
 : Hello world from shell
 
-** Check ~user-emacs-directory~ for empty emacs configuration
+** Ensure that ~user-emacs-directory~ -variable is correctly set
 
 In this primer, we assumme empty emacs configuration. Also, we do not
 want override any existing configrations in directory =~/.emacs.d/=.
@@ -248,13 +231,13 @@ want override any existing configrations in directory =~/.emacs.d/=.
 Documentation for variable ~user-emacs-directory~ extracted with
 source block. 
 
-*Notice*: The source block uses ~:eval no~ preventing its
+*Notice 1*: The source block below uses ~:eval no~ preventing its
 re-evaluation.
 
 
-*Notice*: The source block uses ~:exports both~, which, in github
+*Notice 2*: The source block uses ~:exports both~, which, in github
 shows both code block and the result block. In export (e.g. output to
-pdf file) it has similar effect.
+pdf file), it has similar effect.
 
 
 #+BEGIN_SRC elisp :eval no :exports both
@@ -276,14 +259,14 @@ See also ‘locate-user-emacs-file’.
 #+end_example
 
 
-*Exercise* The documention above cannot refressed with ~C-c C-c.  To
-check current value of variable in you setting evaluate evaluate
-source block below.  Check that it maps to ~tmp~ -directory in the
-repository, and especially that it does not pointo to =~/.emacs.d/=
+*Exercise* Evaluate source block below to ensure that we configuring
+emacs in tmp directory (and, especially, *that it does not poin to to
+~/.emacs.d/*
 
  #+BEGIN_SRC elisp
  user-emacs-directory
  #+END_SRC
+
 
 ** Basic emacs configuration
 *** ~use-package~: isolate package configurations
@@ -1066,8 +1049,7 @@ run ~M-x shell RET~ to open remote eshell.
 
 
 
-
-** Deeper into emacs universe
+** Hint: Some pointers for digging deeper into the Emacs universe
 
 - https://magit.vc/: *warning** you may forget how to use git -CLI
 - https://github.com/Silex/docker.el: *warning* you may forget, how to use docker CLI

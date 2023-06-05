@@ -12,6 +12,20 @@
    expanded as your understanding of the capabilieties of emacs
    -ecosystem increases).
 
+*To start*
+
+Run
+#+begin_example
+git clone https://github.com/jarjuk/emacs-tut
+#+end_example
+
+and change working 
+
+#+begin_example
+cd emacs-tut
+#+end_example
+
+
 *Notice*
 
 ~org-primer.org~ should be run using empty emacs setup (=without

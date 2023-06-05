@@ -621,7 +621,7 @@ Example for for UML deployment diagrams found in
 https://plantuml.com/deployment-diagram
 
 #+name: plantuml-demo1
-#+BEGIN_SRC plantuml :eval no-export :exports results :file tmp/plantuml-demo1.png
+#+BEGIN_SRC plantuml :eval no-export :exports code :file tmp/plantuml-demo1.png
   actor actor
   actor/ "actor/"
   agent agent
@@ -749,7 +749,6 @@ Try:
 - ~C-x C-f~: file completion list
 - ~M-x~: function completions with partial match eg. ~yas sn~ lists
   commands with matches
-
 
 ** Examples using ~dir~ source block directive
 *** Example: Source block directives: dir

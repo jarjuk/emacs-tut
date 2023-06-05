@@ -1,4 +1,4 @@
-* emacs-tut : opinionated emacs tutorial in three steps
+* emacs-tut : opinionated emacs tutorial in three acts
 
 1) [[file:emacs-primer.org]] : In Finnish, my personal view how emacs
    keybings should be presented - TL;DR; C-g and C-h are the only keys

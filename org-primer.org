@@ -800,7 +800,7 @@ Try:
 - ~M-x~: function completions with partial match eg. ~yas sn~ lists
   commands with matches
 
-** ~tramp~: remote access over ssh
+** Example: ~tramp~: remote access over ssh
 *** Example: Source block directives: dir
 
  Define source named source block ~pwd-ls~, which outputs current

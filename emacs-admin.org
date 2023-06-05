@@ -1,1 +1,304 @@
-TBD
+Run  ~C-c C-v C-t~  to tangle file =~/.emacs.d/init.el=
+
+
+#+PROPERTY: header-args+ :tangle ~/.emacs.d/init.el
+
+*Notice* all source block are tangled, unless they define ~:tangle
+no~.
+
+* Initial/common configurations
+
+** Banner
+
+#+BEGIN_SRC elisp 
+  ;; Tangled from emcas-admin.org
+  ;; 
+  ;; CHANGES WILL BE OVERRIDDEN
+#+END_SRC
+
+
+** Configure ~use-package~ - isolate .emacs configurations
+
+Ref. [[https://github.com/jwiegley/use-package]]
+
+#+BEGIN_QUOTE
+The use-package macro allows you to isolate package configuration in
+your .emacs file in a way that is both performance-oriented and, well,
+tidy
+
+#+END_QUOTE
+
+Ref: repostories: https://www.emacswiki.org/emacs/ELPA
+
+#+BEGIN_SRC elisp
+  ;; Packages: https://www.emacswiki.org/emacs/ELPA
+  (package-initialize)
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+  (add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/"))
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; Org-mode's repository
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package)
+  )
+
+  (setq use-package-always-ensure t)
+  ;; (require 'use-package)
+  ;; ;; To activate
+  ;; ;; - enable command-log-mode in buffer
+  ;; ;; - run clm/toggle-command-log-buffer
+  ;; (use-package command-log-mode)
+#+END_SRC
+
+#+RESULTS:
+: t
+
+
+** Config ~org~
+
+Home page: https://orgmode.org/
+
+#+BEGIN_QUOTE
+A GNU Emacs major mode for keeping notes, authoring documents,
+computational notebooks, literate programming, maintaining to-do
+lists, planning projects, and more — in a fast and effective plain
+text system.
+#+END_QUOTE
+
+#+BEGIN_SRC elisp 
+  (use-package org
+    :bind (("C-c b" . org-babel-tangle-block))
+    :config
+    (defun org-babel-tangle-block()
+      (interactive)
+      (let ((current-prefix-arg '(4)))
+	(call-interactively 'org-babel-tangle)
+	))
+    :custom
+    ;; customize languages which can be evaluated in Org buffers.
+    (org-babel-load-languages	'(
+	(shell . t)
+	(octave . t)
+	(emacs-lisp . t)))
+  )
+#+END_SRC
+
+#+RESULTS:
+: org-babel-tangle-block
+
+
+#+BEGIN_SRC elisp :eval no 
+  (setq org-babel-load-languages
+	'(
+	  (shell . t)
+	  (emacs-lisp . t)))
+  ;; Activate Babel languages
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   org-babel-load-languages)
+#+END_SRC
+
+#+RESULTS:
+
+Test tangle
+
+
+** ~undo-tree~ - C-z keybinding
+
+Ref: [[https://elpa.gnu.org/packages/undo-tree.html]]
+
+#+BEGIN_SRC elisp 
+
+    (use-package undo-tree
+      :ensure t
+      :init
+      (global-undo-tree-mode)
+      )
+
+  (global-set-key (kbd "C-z") 'undo)
+  ;; make ctrl-Z redo
+  (defalias 'redo 'undo-tree-redo)
+  (global-set-key (kbd "C-S-z") 'redo)
+  
+#+END_SRC
+
+#+RESULTS:
+: redo
+
+Now:
+- C-z : undo
+- C-S-z : redo
+- C-x U : undo tree
+
+#+RESULTS:
+: redo
+
+
+
+
+
+
+
+
+
+
+* Setup packages
+
+** ~helm~ incremental completion and selection narrowing framework
+
+https://emacs-helm.github.io/helm/
+
+#+BEGIN_SRC elisp :tangle no
+(use-package helm
+  :ensure t
+  :demand
+  :bind (("M-x" . helm-M-x)
+         ("C-x C-f" . helm-find-files)
+         ("C-x b" . helm-buffers-list)
+         ("C-x c o" . helm-occur)) ;SC
+         ("M-y" . helm-show-kill-ring) ;SC
+         ("C-x r b" . helm-filtered-bookmarks) ;SC
+  :preface (require 'helm-config)
+  :config (helm-mode 1))
+#+END_SRC
+
+#+RESULTS:
+: helm-filtered-bookmarks
+
+
+
+
+** ~magit~ - Git Porcelain inside Emacs
+
+https://magit.vc/
+
+#+BEGIN_SRC elisp
+(use-package magit
+  :bind (("C-c i" . magit-status)))
+#+END_SRC
+
+#+RESULTS:
+: magit-status
+
+
+** ~yasnippet~ -  template system for emacs
+   :PROPERTIES:
+   :CUSTOM_ID: config-yas-snippet
+   :END:
+
+Ref: https://github.com/joaotavora/yasnippet
+
+#+BEGIN_QUOTE
+YASnippet is a template system for Emacs. It allows you to type an
+abbreviation and automatically expand it into function
+templates. Bundled language templates include: C, C++, C#, Perl,
+Python, Ruby, SQL, LaTeX, HTML, CSS and more
+#+END_QUOTE
+
+Example configuration:
+https://www.reddit.com/r/emacs/comments/9bvawd/use_yasnippet_via_usepackage/
+
+#+BEGIN_SRC elisp 
+(use-package yasnippet
+ :ensure t
+ :config
+ (yas-global-mode t)
+ (use-package yasnippet-snippets
+ :ensure t)
+ (define-key yas-minor-mode-map (kbd "<C-tab>") 'yas-expand)
+ (define-key yas-minor-mode-map (kbd "<C-S-tab>") 'yas-expand)
+ )
+#+END_SRC
+
+#+RESULTS:
+: t
+
+
+Create directory ~tmp/snippets/org-mode~, unless it exists
+
+#+BEGIN_SRC bash
+[ -d ~/.emacs.d/snippets/org-mode ] || mkdir -p ~/.emacs.d/snippets/org-mode
+#+END_SRC
+
+#+RESULTS:
+
+
+
+** ~scad-mode~ - open scad mode
+
+#+BEGIN_SRC elisp 
+(use-package scad-mode
+  :ensure t
+  :defer t
+  )
+#+END_SRC
+
+** ~org-make-toc~ - easy to have one or more customizable tables of contents in Org files
+
+https://github.com/alphapapa/org-make-toc
+
+#+BEGIN_SRC elisp
+(use-package org-make-toc
+  :ensure t
+  :defer t
+  )
+#+END_SRC
+
+
+*** ~ivy~: generic completion mechanism for Emacs
+
+#+begin_quote
+Ivy is a generic completion mechanism for Emacs. While it operates
+similarly to other completion schemes such as icomplete-mode, Ivy aims
+to be more efficient, smaller, simpler, and smoother to use yet highly
+customizable.
+#+end_quote
+
+References:
+- Ivy generic completion mechanism for Emacs: https://github.com/abo-abo/swiper
+- Counsel: a collection of Ivy-enhanced versions of common Emacs commands: https://elpa.gnu.org/packages/counsel.html
+- Ref: https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/
+
+#+BEGIN_SRC elisp
+(use-package counsel
+  :after ivy
+  :config (counsel-mode))
+
+;; - diminish - keep ivy out of modeline
+(use-package ivy
+  :defer 0.1
+  :diminish
+  :bind (("C-c C-r" . ivy-resume)
+         ("C-x B" . ivy-switch-buffer-other-window))
+  :custom
+  (ivy-count-format "(%d/%d) ")
+  (ivy-use-virtual-buffers t)
+  :config (ivy-mode 1))
+
+#+END_SRC
+
+#+RESULTS:
+: ivy-switch-buffer-other-window
+
+Try:
+- ~C-x C-f~: file completion list
+- ~M-x~: function completions with partial match eg. ~yas sn~ lists
+  commands with matches
+
+
+
+* Fin                                                              :noexport:
+
+** Emacs variables
+
+   #+RESULTS:
+
+   # Local Variables:
+   # org-confirm-babel-evaluate: nil
+   # End:
+   #
+
+
+
+

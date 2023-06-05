@@ -1,5 +1,7 @@
 2023-06-05  jj  <jj@eero>
 
+	* emacs-admin.org (~ivy~: generic completion mechanism for Emacs): first version
+
 	* org-primer.org (Local and remote shell): tramp examples
 	(Hint: Edit snippets directly): added
 

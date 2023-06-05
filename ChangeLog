@@ -1,5 +1,7 @@
 2023-06-05  jj  <jj@eero>
 
+	* org-primer.sh (usage): added --cleanup option, --help usage
+
 	* README.org (emacs-tut : opinionated emacs tutorial in three
 	steps): instruct how to run org-primer.org in empty emacs setup
 

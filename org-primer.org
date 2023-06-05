@@ -28,14 +28,13 @@ emacs -q -l demo-init.el org-primer.org
 or simply run
 
 #+begin_example
-./emacs-tut.sh org-primer.org
+./org-primer.sh 
 #+end_example
 
 To open/close: outline 
 - TAB: cycle open outline level/open content/close outline for the
   hierarchy under cursor
 - SHIFT-TAB: cycle open/close all all document hierarchies
-
 
 * Org-mode primer
 ** emacs/org-mode speaks natively lisp

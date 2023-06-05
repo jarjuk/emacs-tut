@@ -992,3 +992,13 @@ Try:
  #+RESULTS:
  : #<buffer emacs-tut>
 
+** Deeper into emacs universe
+
+- https://magit.vc/: *warning** you may forget how to use git -CLI
+- https://github.com/Silex/docker.el: *warning* you may forget, how to use docker CLI
+- https://github.com/necaris/conda.el: essential in emacs+conda  setup
+- https://github.com/emacs-lsp/lsp-mode: basis for modern IDE support
+- https://github.com/bbatsov/projectile: at some point you find the
+  need to manage and navigate document assets
+- https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-asymptote.html:
+  vector graphics

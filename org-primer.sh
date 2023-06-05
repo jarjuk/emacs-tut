@@ -30,7 +30,7 @@ do
 	    ;;
 	
 	--cleanup)
-	    rm -f tmp/*
+	    rm -rf tmp/*
 	    shift
 	    ;;
 	

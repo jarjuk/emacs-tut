@@ -37,9 +37,26 @@ To open/close: outline
 - SHIFT-TAB: cycle open/close all all document hierarchies
 
 * Org-mode primer
-** emacs/org-mode speaks natively lisp
+** Hint: formatting in org documents
+
+Org mode supports simple formattig support:
+
+- tilde character around text marks ~code~ format
+- also equal signs around text mark =code= format
+- /italics/ with slash character
+- *bold* with asterisks
+
+** emacs speaks natively lisp, org-mode implements source-blocks
 Natively emacs speaks only lisp. Other languages need to be activated
 and possibly extension should be loaded to support the language.
+
+Lisp is mainly used to configure emacs in =~/.emacs.d/init.el= file.
+However, it is good to realize that emacs functionality is implemented
+in lisp functions, to which key sequences are bound to.
+
+*Exercise* Open key binding C-h b, and browse for key definitions and
+their bindigs. To find documentation of lisp functionc C-h f, and type
+name of the function and RET.
 
 *** Example: Hello world (lisp version)
 
@@ -63,21 +80,18 @@ Create a named ~hello-whom~ source block accepting parameter
  #+RESULTS: hello-whom
  : Hello world!
 
+
+Calling name source block ~hello-whom~, and pass paremeter binding
+~WHOM="moon"~, expect greetings sent to moon.
+
 #+call: hello-whom(WHOM="moon")
 
 #+RESULTS:
 : Hello moon!
-
-** Hint: formatting in org documents
-
-Org mode supports simple formattig support:
-
-- tilde character around text marks ~code~ format
-- also equal signs around text mark =code= format
-- /italics/ with slash character
-- *bold* with asterisks
-
 ** ~org-confirm-babel-evaluate~: confirmation in source block evaluation 
+
+Emacs defines configurable variables, which allow its behaviour to
+change. Documentation of variable ~org-confirm-babel-evaluate~
 
 To turn confirmation off (in current emacs session) by setting
 variable 'org-confirm-babel-evaluate' to nil.
@@ -101,6 +115,9 @@ is not required anymore.
 #+RESULTS:
 : Hello again
 
+*Exercise* Access variable documentation: type ~C-h v
+org-confirm-babel-evaluate RET~
+
 ** ~describe-variable~ Access variable documentation
 
 You may show variable documentation using ~C-h v~ keyboard sequence.
@@ -118,13 +135,13 @@ variable ~org-confirm-babel-evaluate~.
 (describe-variable 'org-confirm-babel-evaluate)
 #+END_SRC
 
-** Setting some usefull (essential) confgurations in emacs
+** Some usefull (=essential?) emacs confgurations
 
-Instruct emacs:
-- not make backup files
+Following lisp snippet instructs emacs
+- not to make backup files
 - to silence annoying bell
-- match opening bracets, braces etc with closing one
-- create key binding ~C-x '~ to compare two windows (comparison halts
+- to match opening bracets, braces etc with closing ones
+- to create key binding ~C-x '~ to compare two windows (comparison halts
   with first difference)
 
 
@@ -191,16 +208,18 @@ succeeds. Notice that here we are making a call to named source block
 #+RESULTS:
 : Hello world from shell
 
-** Show ~user-emacs-directory~ mapped to ~/work/emacs.d/tmp~
+** Check ~user-emacs-directory~ for empty emacs configuration
 
-In this primer, we assumme an empty emacs configuration. Also we do
-not want override any existing configration in directory
-=~/.emacs.d/=.
+In this primer, we assumme empty emacs configuration. Also, we do not
+want override any existing configrations in directory =~/.emacs.d/=.
 
 Documentation for variable ~user-emacs-directory~ extracted with
-source block
+source block. 
 
-#+BEGIN_SRC elisp :eval no-export
+*Notice*: The source block uses ~:eval no~ preventing its
+re-evaluation.
+
+#+BEGIN_SRC elisp :eval no
 (describe-variable 'user-emacs-directory)
 #+END_SRC
 
@@ -219,18 +238,16 @@ See also ‘locate-user-emacs-file’.
 #+end_example
 
 
-*Exercise* The documention above (refresshed with ~C-c C-c~ shows
-current value of variable, just to be on safe side show the value
-using the sourcve block below, and ensure that it is not =~/.emacs.d/=
+*Exercise* The documention above cannot refressed with ~C-c C-c.  To
+check current value of variable in you setting evaluate evaluate
+source block below.  Check that it maps to ~tmp~ -directory in the
+repository, and especially that it does not pointo to =~/.emacs.d/=
 
  #+BEGIN_SRC elisp
  user-emacs-directory
  #+END_SRC
 
- #+RESULTS:
- : ~/work/emacs-tut/tmp
-
-** Adding Configuring emacs
+** Basic emacs configuration
 *** ~use-package~: isolate package configurations
 
  Ref. [[https://github.com/jwiegley/use-package]]
@@ -395,7 +412,7 @@ rm -f tmp/demo.txt
 
 #+RESULTS:
 
-*** ~yas-snippet~: 
+*** ~yas-snippet~: a template system for Emacs
     :PROPERTIES:
     :CUSTOM_ID: config-yas-snippet
     :END:
@@ -429,6 +446,9 @@ https://www.reddit.com/r/emacs/comments/9bvawd/use_yasnippet_via_usepackage/
 
 *** Ensure directory ~tmp/snippets/org-mode~ exists
 
+Bash source block, which ensures ~tmp/snippets/org-mode~ -directory
+for yas org-mode template snippets exists.
+
 #+BEGIN_SRC bash
 [ -d tmp/snippets/org-mode ] || mkdir -p tmp/snippets/org-mode
 #+END_SRC
@@ -441,11 +461,14 @@ ls -ltr tmp/snippets/org-mode
 #+END_SRC
 
 #+RESULTS:
-: total 5
-: -rw-rw-r-- 1 jj jj 127 kesä    4 10:45 src-bash
+: total 25
+: -rw-rw-r-- 1 jj jj 665 kesä    4 14:46 img-deployment
+: -rw-rw-r-- 1 jj jj 126 kesä    4 15:04 src-bash
+: -rw-rw-r-- 1 jj jj 111 kesä    4 15:13 src-lisp
+: -rw-rw-r-- 1 jj jj 129 kesä    4 15:24 org-var
+: -rw-rw-r-- 1 jj jj 415 kesä    4 22:19 src-sed
 
 *** Tangle some yas-snippets
-
 **** src-bash
 
 Tangle following source block into file
@@ -509,8 +532,49 @@ Make emacs aware of the newly tangled snippet. (Run ~C-c C-c~ on the
 Test: press TAB end of the line below
 src-lisp
 
+**** ~org-var~:  Add property drawer defining header variable
+
+We have already shown, how parameters for source block can be defined
+as source block header variables. Parameters can be also be defined in
+document topic "drawers" (:PROPERTIES: .. :END: block immediatelly
+after topic line.
+
+Create yas snippet ~org-var~ accepting two parameters ~$1~ with
+default value ~NAME~ and ~$2~ with default value ~value~.
+
+#+begin_src txt :tangle tmp/snippets/org-mode/org-var
+# -*- mode: snippet -*-
+# name: org-var
+# key: org-var
+# --
+:PROPERTIES:
+:header-args+:   :var  ${1:NAME}="${2:value}"
+:END:
+
+$0
+ #+end_src
+
+
+#+call: yas-reload()
+
+ #+RESULTS:
+ : [yas] Prepared just-in-time loading of snippets successfully.
+
+
+***** ~org-var~: test topic for yas-snippet 
+
+Type ~org-var~ followed by ~TAB~, just below topic line above. Accept
+default values to define variable ~NAME~.
+
+Test variable value by executing the source block below.
+#+BEGIN_SRC bash :eval no-export :results output 
+echo NAME=$NAME
+#+END_SRC
 
 *** ~plantuml-mode~: PlantUML is a component that allows you to quickly diagrams
+
+This section assumes that yas-snippets have been installed.
+
 
 Ref: 
 - https://github.com/skuro/plantuml-mode
@@ -640,285 +704,7 @@ After tanling, reload yas-snippets by calling yas-reload
 Press ~TAB~ end of next line to create yas-snippet.
 img-deployment
 
-**** ~org-var~:  Add property drawer defining header variable
-
- #+begin_src txt :tangle tmp/snippets/org-mode/org-var
-# -*- mode: snippet -*-
-# name: org-var
-# key: org-var
-# --
-:PROPERTIES:
-:header-args+:   :var  ${1:NAME}="${2:value}"
-:END:
-
-$0
- #+end_src
-
-
- #+call: yas-reload()
-
- #+RESULTS:
- : [yas] Prepared just-in-time loading of snippets successfully.
-
-***** Test
-
-
-Type ~org-var~ followed by ~TAB~, just below heading test. Accept
-default values to define variable ~NAME~.  
-
-
-Test variable value by executing the source block below.
-#+BEGIN_SRC bash :eval no-export :results output 
-echo NAME=$NAME
-#+END_SRC
-
-** Example: Source block directives: dir
-
-Define source named source block ~pwd-ls~, which outputs current
-working directory and show its content.
-
-#+name: pwd-ls
-#+BEGIN_SRC bash :eval no-export :results output
-pwd
-ls -l
-#+END_SRC
-
-Expect to see directory where this tutorial is located. Particulary,
-notice that there also a directory ~tmp~
-
-#+RESULTS: pwd-ls
-#+begin_example
-/home/jj/work/emacs-tut
-total 40
--rw-rw-r-- 1 jj jj   137 kesä    3 11:28 demo-init.el
--rw-rw-r-- 1 jj jj  5359 kesä    3 19:34 emacs-primer.org
--rwxr-xr-x 1 jj jj    40 kesä    4 10:11 emacs-tut.sh
--rw-rw-r-- 1 jj jj 14373 kesä    4 14:39 org-primer.org
--rw-rw-r-- 1 jj jj 11218 kesä    4 10:50 org-primer.org~
--rw-rw-r-- 1 jj jj    55 kesä    3 11:18 README.md
--rw-rw-r-- 1 jj jj    59 kesä    3 11:19 README.org
-drwxrwxr-x 4 jj jj     6 kesä    4 14:33 tmp
-#+end_example
-
-
-Define un-named source block, with the same commands as the named
-source block ~pwd-ls~. However, this source block adds the header
-directive ~:dir tmp~.  As of the effect, this source block runs in
-~tmp~ directory:
-
-#+BEGIN_SRC bash :eval no-export :results output :dir tmp
-pwd
-ls 
-#+END_SRC
-
-#+RESULTS:
-: /home/jj/work/emacs-tut/tmp
-: demo2.png
-: deployment.png
-: elpa
-: plantuml-demo1.png
-: recentf
-: snippets
-: tramp
-
-Header directives can be added also source block calls. Calling
-~pwd-ls~ works in current working directory.
-
-#+call: pwd-ls()
-
-#+RESULTS:
-#+begin_example
-/home/jj/work/emacs-tut
-total 64
--rw-rw-r-- 1 jj jj   137 kesä    3 11:28 demo-init.el
--rw-rw-r-- 1 jj jj     4 kesä    4 18:01 emacs-admin.org
--rw-rw-r-- 1 jj jj  5853 kesä    4 21:33 emacs-primer.org
--rw-rw-r-- 1 jj jj  5810 kesä    4 21:17 emacs-primer.org~
--rwxr-xr-x 1 jj jj   210 kesä    4 18:06 emacs-tut.sh
--rwxr-xr-x 1 jj jj    40 kesä    4 10:11 emacs-tut.sh~
-drwxrwxr-x 2 jj jj     3 kesä    4 14:57 jar
--rw-rw-r-- 1 jj jj 23116 kesä    4 22:09 org-primer.org
--rw-rw-r-- 1 jj jj 22057 kesä    4 21:59 org-primer.org~
--rw-rw-r-- 1 jj jj    55 kesä    3 11:18 README.md
--rw-rw-r-- 1 jj jj   440 kesä    4 17:43 README.org
-drwxrwxr-x 4 jj jj    10 kesä    4 22:06 tmp
-#+end_example
-
-
-The example belos calls named source block ~pwd-ls~ in the context of
-directory ~tmp~:
-
-#+call: pwd-ls[:dir tmp]()
-
-#+RESULTS:
-: /home/jj/work/emacs-tut/tmp
-: total 107
-: -rw-rw-r--  1 jj jj 27504 kesä    4 14:45 demo2.png
-: -rw-rw-r--  1 jj jj 27504 kesä    4 14:47 deployment.png
-: drwxrwxr-x 19 jj jj    21 kesä    4 17:00 elpa
-: -rw-rw-r--  1 jj jj 27504 kesä    4 17:03 plantuml-demo1.png
-: -rw-------  1 jj jj   351 kesä    4 18:02 recentf
-: drwxrwxr-x  3 jj jj     3 kesä    4 10:41 snippets
-: -rw-rw-r--  1 jj jj  1123 kesä    4 17:01 tramp
-
-** Example: running source block on host machine
-:PROPERTIES:
-:header-args+: :var  IP="192.168.100.100"
-:END:
-
-This chapter presents, how source block ~:dir~ -directive can even
-make the source block to execute in a different machine.
-
-In this example we are accessing service with the IP address given in
-the /property drawer/ above. Configure IP address to machine, which
-you have access to.
-
-*** Ping IP
-
-Show the IP -address we are using:
-
-#+BEGIN_SRC bash :eval no-export :results output
-echo IP=$IP
-#+END_SRC
-
-#+RESULTS:
-: IP=192.168.100.100
-
-Pinging to machine to see that we have TCP/IP connection to it.
-
-#+BEGIN_SRC bash :eval no-export :results output
-ping -c 3 $IP
-#+END_SRC
-
-#+RESULTS:
-: PING 192.168.100.100 (192.168.100.100) 56(84) bytes of data.
-: 64 bytes from 192.168.100.100: icmp_seq=1 ttl=64 time=8.65 ms
-: 64 bytes from 192.168.100.100: icmp_seq=2 ttl=64 time=14.6 ms
-: 64 bytes from 192.168.100.100: icmp_seq=3 ttl=64 time=9.72 ms
-: 
-: --- 192.168.100.100 ping statistics ---
-: 3 packets transmitted, 3 received, 0% packet loss, time 2004ms
-: rtt min/avg/max/mdev = 8.646/10.978/14.568/2.575 ms
-
-*** ~src-sed~
-
-
-We create a yas-snippet to edit file. The script keeps editions
-wrapped with comment lines to help replacing the changes.
-
-Tangle the snippet with ~C-c B~
-#+begin_src txt :tangle tmp/snippets/org-mode/src-sed
-# -*- mode: snippet -*-
-# name: src-sed
-# key: src-sed
-# --
-
-#+BEGIN_SRC bash :eval no-export :results output
-FILE=${1:file_to_edit}
-START="`(concat "added from org-document " (buffer-name) " - start")`"
-END="`(concat "added from org-document " (buffer-name) " - end")`"
-
-echo "modifying $FILE on host '$(hostname)'"
-
-sed -i -e "/$START/,/$END/d" $FILE
-
-cat <<HERE | tee -a $FILE
-# $START
-$0
-# $END
-HERE
-
-,#+END_SRC
-
-#+end_src
-
-
-#+call: yas-reload()
-
-#+RESULTS:
-: [yas] Prepared just-in-time loading of snippets successfully.
-
-*** ~tramp~ with source blocks
-
-Emacs comes bundled with TRAMP https://www.gnu.org/software/tramp/
-
-#+begin_quote
-TRAMP stands for “Transparent Remote (file) Access, Multiple Protocol”
-#+end_quote
-
-
-#+RESULTS:
-: [yas] Prepared just-in-time loading of snippets successfully.
-
-Call yas-sinnet ~src-sed~ to add section defining ssh alias ~demo_ip~
-in ~/.ssh/config~
-
-#+BEGIN_SRC bash :eval no-export :results output
-FILE=~/.ssh/config
-START="added from org-document org-primer.org - start"
-END="added from org-document org-primer.org - end"
-
-echo "modifying $FILE on host '$(hostname)'"
-
-sed -i -e "/$START/,/$END/d" $FILE
-
-cat <<HERE | tee -a $FILE
-# $START
-host jrr1
-     user pi
-     IdentityFile ~/.ssh/id_rsa
-     hostname 192.168.100.100
-# $END
-HERE
-
-#+END_SRC
-
-#+RESULTS:
-: modifying /home/jj/.ssh/config on host 'eero'
-: # added from org-document org-primer.org - start
-: host jrr1
-:      user pi
-:      IdentityFile ~/.ssh/id_rsa
-:      hostname 192.168.100.100
-: # added from org-document org-primer.org - end
-
-
-Create named source block ~tramp-greeting~
-
-#+name: tramp-greeting
-#+BEGIN_SRC bash :eval no-export :results output :var WHOM="world"
-echo Greetings to $WHOM from $(hostname) on $(date)
-#+END_SRC
-
-#+RESULTS: tramp-greeting
-: Greetings to world from eero on su 4.6.2023 16.51.37 +0300
-
-
-Assuming that you have distributed =~/.ssh/id_rsa= -identity to
-machine in ~$IP~ -address, e.g. using a command such as
-
-#+begin_example
-ssh-copy-id -i ~/.ssh/id_rsa pi@$IP
-#+end_example
-
-then calling source block using ~:dir /ssh:jrr1:~ -directive and
-variable ~WHOM="moon"~ is run on ~$IP~ -address:
-
-#+call: tramp-greeting[:dir /ssh:jrr1:](WHOM="moon")
-
-#+RESULTS:
-: Greetings to moon from jrr1 on Sun Jun 4 16:55:55 EEST 2023
-
-*** TODO ~tramp~ with dir
-
-#+BEGIN_SRC elisp :eval no-export
-(dired ".")
-#+END_SRC
-
-#+RESULTS:
-: #<buffer emacs-tut>
-
-** ~ivy~: generic completion mechanism for Emacs
+*** ~ivy~: generic completion mechanism for Emacs
 
 #+begin_quote
 Ivy is a generic completion mechanism for Emacs. While it operates
@@ -958,4 +744,251 @@ Try:
 - ~M-x~: function completions with partial match eg. ~yas sn~ lists
   commands with matches
 
-  q
+
+** Examples using ~dir~ source block directive
+*** Example: Source block directives: dir
+
+ Define source named source block ~pwd-ls~, which outputs current
+ working directory and show its content.
+
+ #+name: pwd-ls
+ #+BEGIN_SRC bash :eval no-export :results output
+ pwd
+ ls -l
+ #+END_SRC
+
+ Expect to see directory where this tutorial is located. Particulary,
+ notice that there also a directory ~tmp~
+
+ #+RESULTS: pwd-ls
+ #+begin_example
+ /home/jj/work/emacs-tut
+ total 40
+ -rw-rw-r-- 1 jj jj   137 kesä    3 11:28 demo-init.el
+ -rw-rw-r-- 1 jj jj  5359 kesä    3 19:34 emacs-primer.org
+ -rwxr-xr-x 1 jj jj    40 kesä    4 10:11 emacs-tut.sh
+ -rw-rw-r-- 1 jj jj 14373 kesä    4 14:39 org-primer.org
+ -rw-rw-r-- 1 jj jj 11218 kesä    4 10:50 org-primer.org~
+ -rw-rw-r-- 1 jj jj    55 kesä    3 11:18 README.md
+ -rw-rw-r-- 1 jj jj    59 kesä    3 11:19 README.org
+ drwxrwxr-x 4 jj jj     6 kesä    4 14:33 tmp
+ #+end_example
+
+
+ Define un-named source block, with the same commands as the named
+ source block ~pwd-ls~. However, this source block adds the header
+ directive ~:dir tmp~.  As of the effect, this source block runs in
+ ~tmp~ directory:
+
+ #+BEGIN_SRC bash :eval no-export :results output :dir tmp
+ pwd
+ ls 
+ #+END_SRC
+
+ #+RESULTS:
+ : /home/jj/work/emacs-tut/tmp
+ : demo2.png
+ : deployment.png
+ : elpa
+ : plantuml-demo1.png
+ : recentf
+ : snippets
+ : tramp
+
+ Header directives can be added also source block calls. Calling
+ ~pwd-ls~ works in current working directory.
+
+ #+call: pwd-ls()
+
+ #+RESULTS:
+ #+begin_example
+ /home/jj/work/emacs-tut
+ total 64
+ -rw-rw-r-- 1 jj jj   137 kesä    3 11:28 demo-init.el
+ -rw-rw-r-- 1 jj jj     4 kesä    4 18:01 emacs-admin.org
+ -rw-rw-r-- 1 jj jj  5853 kesä    4 21:33 emacs-primer.org
+ -rw-rw-r-- 1 jj jj  5810 kesä    4 21:17 emacs-primer.org~
+ -rwxr-xr-x 1 jj jj   210 kesä    4 18:06 emacs-tut.sh
+ -rwxr-xr-x 1 jj jj    40 kesä    4 10:11 emacs-tut.sh~
+ drwxrwxr-x 2 jj jj     3 kesä    4 14:57 jar
+ -rw-rw-r-- 1 jj jj 23116 kesä    4 22:09 org-primer.org
+ -rw-rw-r-- 1 jj jj 22057 kesä    4 21:59 org-primer.org~
+ -rw-rw-r-- 1 jj jj    55 kesä    3 11:18 README.md
+ -rw-rw-r-- 1 jj jj   440 kesä    4 17:43 README.org
+ drwxrwxr-x 4 jj jj    10 kesä    4 22:06 tmp
+ #+end_example
+
+
+ The example belos calls named source block ~pwd-ls~ in the context of
+ directory ~tmp~:
+
+ #+call: pwd-ls[:dir tmp]()
+
+ #+RESULTS:
+ : /home/jj/work/emacs-tut/tmp
+ : total 107
+ : -rw-rw-r--  1 jj jj 27504 kesä    4 14:45 demo2.png
+ : -rw-rw-r--  1 jj jj 27504 kesä    4 14:47 deployment.png
+ : drwxrwxr-x 19 jj jj    21 kesä    4 17:00 elpa
+ : -rw-rw-r--  1 jj jj 27504 kesä    4 17:03 plantuml-demo1.png
+ : -rw-------  1 jj jj   351 kesä    4 18:02 recentf
+ : drwxrwxr-x  3 jj jj     3 kesä    4 10:41 snippets
+ : -rw-rw-r--  1 jj jj  1123 kesä    4 17:01 tramp
+
+*** Example: running source block on host machine
+    :PROPERTIES:
+    :header-args+: :var  IP="192.168.100.100"
+    :END:
+
+ This chapter presents, how source block ~:dir~ -directive can even
+ make the source block to execute in a different machine.
+
+ In this example we are accessing service with the IP address given in
+ the /property drawer/ above. Configure IP address to machine, which
+ you have access to.
+
+**** Ping IP
+
+ Show the IP -address we are using:
+
+ #+BEGIN_SRC bash :eval no-export :results output
+ echo IP=$IP
+ #+END_SRC
+
+ #+RESULTS:
+ : IP=192.168.100.100
+
+ Pinging to machine to see that we have TCP/IP connection to it.
+
+ #+BEGIN_SRC bash :eval no-export :results output
+ ping -c 3 $IP
+ #+END_SRC
+
+ #+RESULTS:
+ : PING 192.168.100.100 (192.168.100.100) 56(84) bytes of data.
+ : 64 bytes from 192.168.100.100: icmp_seq=1 ttl=64 time=8.65 ms
+ : 64 bytes from 192.168.100.100: icmp_seq=2 ttl=64 time=14.6 ms
+ : 64 bytes from 192.168.100.100: icmp_seq=3 ttl=64 time=9.72 ms
+ : 
+ : --- 192.168.100.100 ping statistics ---
+ : 3 packets transmitted, 3 received, 0% packet loss, time 2004ms
+ : rtt min/avg/max/mdev = 8.646/10.978/14.568/2.575 ms
+
+**** ~src-sed~
+
+
+ We create a yas-snippet to edit file. The script keeps editions
+ wrapped with comment lines to help replacing the changes.
+
+ Tangle the snippet with ~C-c B~
+ #+begin_src txt :tangle tmp/snippets/org-mode/src-sed
+ # -*- mode: snippet -*-
+ # name: src-sed
+ # key: src-sed
+ # --
+
+ #+BEGIN_SRC bash :eval no-export :results output
+ FILE=${1:file_to_edit}
+ START="`(concat "added from org-document " (buffer-name) " - start")`"
+ END="`(concat "added from org-document " (buffer-name) " - end")`"
+
+ echo "modifying $FILE on host '$(hostname)'"
+
+ sed -i -e "/$START/,/$END/d" $FILE
+
+ cat <<HERE | tee -a $FILE
+ # $START
+ $0
+ # $END
+ HERE
+
+ ,#+END_SRC
+
+ #+end_src
+
+
+ #+call: yas-reload()
+
+ #+RESULTS:
+ : [yas] Prepared just-in-time loading of snippets successfully.
+
+**** ~tramp~ with source blocks
+
+ Emacs comes bundled with TRAMP https://www.gnu.org/software/tramp/
+
+ #+begin_quote
+ TRAMP stands for “Transparent Remote (file) Access, Multiple Protocol”
+ #+end_quote
+
+
+ #+RESULTS:
+ : [yas] Prepared just-in-time loading of snippets successfully.
+
+ Call yas-sinnet ~src-sed~ to add section defining ssh alias ~demo_ip~
+ in ~/.ssh/config~
+
+ #+BEGIN_SRC bash :eval no-export :results output
+ FILE=~/.ssh/config
+ START="added from org-document org-primer.org - start"
+ END="added from org-document org-primer.org - end"
+
+ echo "modifying $FILE on host '$(hostname)'"
+
+ sed -i -e "/$START/,/$END/d" $FILE
+
+ cat <<HERE | tee -a $FILE
+ # $START
+ host jrr1
+      user pi
+      IdentityFile ~/.ssh/id_rsa
+      hostname 192.168.100.100
+ # $END
+ HERE
+
+ #+END_SRC
+
+ #+RESULTS:
+ : modifying /home/jj/.ssh/config on host 'eero'
+ : # added from org-document org-primer.org - start
+ : host jrr1
+ :      user pi
+ :      IdentityFile ~/.ssh/id_rsa
+ :      hostname 192.168.100.100
+ : # added from org-document org-primer.org - end
+
+
+ Create named source block ~tramp-greeting~
+
+ #+name: tramp-greeting
+ #+BEGIN_SRC bash :eval no-export :results output :var WHOM="world"
+ echo Greetings to $WHOM from $(hostname) on $(date)
+ #+END_SRC
+
+ #+RESULTS: tramp-greeting
+ : Greetings to world from eero on su 4.6.2023 16.51.37 +0300
+
+
+ Assuming that you have distributed =~/.ssh/id_rsa= -identity to
+ machine in ~$IP~ -address, e.g. using a command such as
+
+ #+begin_example
+ ssh-copy-id -i ~/.ssh/id_rsa pi@$IP
+ #+end_example
+
+ then calling source block using ~:dir /ssh:jrr1:~ -directive and
+ variable ~WHOM="moon"~ is run on ~$IP~ -address:
+
+ #+call: tramp-greeting[:dir /ssh:jrr1:](WHOM="moon")
+
+ #+RESULTS:
+ : Greetings to moon from jrr1 on Sun Jun 4 16:55:55 EEST 2023
+
+**** TODO ~tramp~ with dir
+
+ #+BEGIN_SRC elisp :eval no-export
+ (dired ".")
+ #+END_SRC
+
+ #+RESULTS:
+ : #<buffer emacs-tut>
+

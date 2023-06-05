@@ -1,5 +1,7 @@
 2023-06-05  jj  <jj@eero>
 
+	* org-primer.org (Examples using ~dir~ source block directive): some clarifications
+
 	* emacs-primer.org: Added cheat sheets
 
 	* org-primer.sh (usage): added --cleanup option, --help usage

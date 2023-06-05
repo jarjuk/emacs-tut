@@ -22,7 +22,7 @@ emacs. For Help/more documentation for org-mode:
 
 In the primer repo issue the following command:
 #+begin_example
-emacs -q -l demo-init.el emacs-demo.org
+emacs -q -l demo-init.el org-primer.org
 #+end_example
 
 or simply run

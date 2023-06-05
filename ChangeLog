@@ -1,5 +1,8 @@
 2023-06-05  jj  <jj@eero>
 
+	* README.org (emacs-tut : opinionated emacs tutorial in three
+	steps): instruct how to run org-primer.org in empty emacs setup
+
 	* README.md: Removed (using README.org)
 
 	* emacs-primer.org: Added some exercises for ChangeLog

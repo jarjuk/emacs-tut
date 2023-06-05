@@ -11,5 +11,19 @@
    configuration (the file, which should be expanded when
    understanding of capabilieties increase)
 
+*Notice*
 
+~org-primer.org~ should be run using empty emacs setup (=without
+~/.emacs.d/init.el, ~/.emacs etc configuration). This can be done
+running
+
+#+begin_example
+emacs -q -l demo-init.el emacs-demo.org
+#+end_example
+
+or simply using associated script
+
+#+begin_example
+./org-primer.sh
+#+end_example>
 

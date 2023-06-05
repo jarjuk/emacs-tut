@@ -156,3 +156,10 @@ pitäisi täydentyä ChangeLog, jonka voi kuitata RET
 
 *Harjoitus* Avaa muutostosloki C-x 4 a. Lisää sinne kommentti ja
  talleta se C-x C-s komennolla ja sulje muutosloki C-x 0 komennolla.
+
+*Cheatsheetit*
+
+- https://www.gnu.org/software/emacs/refcards/pdf/refcard.pdf :
+  tod. näköisesti se wirallisin version näppäinkomennoista
+- https://www.shortcutfoo.com/app/dojos/emacs/cheatsheet: lyhennelmä,
+  jossa näköjään tässä dokumentissa esitetyt komennot ja muutama muu

@@ -1,5 +1,7 @@
 2023-06-05  jj  <jj@eero>
 
+	* emacs-primer.org: Added cheat sheets
+
 	* org-primer.sh (usage): added --cleanup option, --help usage
 
 	* README.org (emacs-tut : opinionated emacs tutorial in three

@@ -219,7 +219,13 @@ source block.
 *Notice*: The source block uses ~:eval no~ preventing its
 re-evaluation.
 
-#+BEGIN_SRC elisp :eval no
+
+*Notice*: The source block uses ~:exports both~, which, in github
+shows both code block and the result block. In export (e.g. output to
+pdf file) it has similar effect.
+
+
+#+BEGIN_SRC elisp :eval no :exports both
 (describe-variable 'user-emacs-directory)
 #+END_SRC
 

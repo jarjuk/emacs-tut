@@ -4,9 +4,12 @@
    keybings should be presented - TL;DR; C-g and C-h are the only keys
    you need to know ;)
 2) [[file:org-primer.org]] : Primer helping to understand emacs and
-   org-mode. Includes some examples.
+   org-mode. Includes some examples. This is *NOT* the way to
+   configure emacs - it is intended to help in understanding workings
+   of emacs and especially org-mode.
 3) [[file:emacs-admin.org]] : The first version for your own emacs
-   configuration (to be expanded)
+   configuration (the file, which should be expanded when
+   understanding of capabilieties increase)
 
 
 

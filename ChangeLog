@@ -1,5 +1,7 @@
 2023-06-05  jj  <jj@eero>
 
+	* emacs-primer.org (Some key commands working on emacs-org topics): added
+
 	* org-primer.org (Examples using ~dir~ source block directive): some clarifications
 	(Deeper into emacs universe): added
 

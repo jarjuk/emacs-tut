@@ -163,3 +163,18 @@ pitäisi täydentyä ChangeLog, jonka voi kuitata RET
   tod. näköisesti se wirallisin version näppäinkomennoista
 - https://www.shortcutfoo.com/app/dojos/emacs/cheatsheet: lyhennelmä,
   jossa näköjään tässä dokumentissa esitetyt komennot ja muutama muu
+
+
+To open/close emacs-org outline hierarchies
+- TAB: cycle open outline level/open content/close outline on the
+  topic header below
+- SHIFT-TAB: cycle open/close all all document hierarchies
+
+* Outline level 
+** Outline level 2
+** Outline level 2
+** Some key commands working on emacs-org topics
+
+- M-RET : to create new outline level
+- M-ARROW-RIGHT  on outline topic: demove topic level
+- M-ARROW-LEFT on outline level: promote topic level

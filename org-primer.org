@@ -18,9 +18,9 @@ emacs. For Help/more documentation for org-mode:
   not all of the actually that usefull )
 - C-h I : search/user cursor to line with 'Org Mode' 
 
-*This primer assumes that is run in empty emacs content*
+*This primer assumes that it is run in empty emacs content*
 
-In the primer repo issue the following command:
+In the primer repo, issue the following command:
 #+begin_example
 emacs -q -l demo-init.el org-primer.org
 #+end_example
@@ -31,23 +31,29 @@ or simply run
 ./org-primer.sh 
 #+end_example
 
+or even in a cleaner environment (=empty ~tmp~ directory)
+
+#+begin_example
+./org-primer.sh --cleanup
+#+end_example>
+
 To open/close: outline 
-- TAB: cycle open outline level/open content/close outline for the
-  hierarchy under cursor
+- TAB: cycle open outline level/open content/close outline on the
+  hierarchy topic under cursor
 - SHIFT-TAB: cycle open/close all all document hierarchies
 
 * Org-mode primer
 ** Hint: formatting in org documents
 
-Org mode supports simple formattig support:
+Org mode implements simple formattig:
 
-- tilde character around text marks ~code~ format
-- also equal signs around text mark =code= format
-- /italics/ with slash character
-- *bold* with asterisks
+- tilde -character around text marks ~code~ format
+- equal -signs around text marks also =code= format
+- /italics/ with slash characters
+- *bold* with asterisks 
 
 ** emacs speaks natively lisp, org-mode implements source-blocks
-Natively emacs speaks only lisp. Other languages need to be activated
+Natively emacs speaks only lisp. Other languages need to be activated,
 and possibly extension should be loaded to support the language.
 
 Lisp is mainly used to configure emacs in =~/.emacs.d/init.el= file.
@@ -90,11 +96,11 @@ Calling name source block ~hello-whom~, and pass paremeter binding
 : Hello moon!
 ** ~org-confirm-babel-evaluate~: confirmation in source block evaluation 
 
-Emacs defines configurable variables, which allow its behaviour to
-change. Documentation of variable ~org-confirm-babel-evaluate~
+Emacs defines configuration variables to change its behaviour.
 
 To turn confirmation off (in current emacs session) by setting
-variable 'org-confirm-babel-evaluate' to nil.
+variable 'org-confirm-babel-evaluate' to nil. Evaluate the source
+block below with ~C-c C-c~:
 
 #+BEGIN_SRC elisp :eval no-export
 (setq org-confirm-babel-evaluate nil)
@@ -102,8 +108,8 @@ variable 'org-confirm-babel-evaluate' to nil.
 
 #+RESULTS:
 
-Once confirmation is inhibited, evaulatin source code block C-c C-c 
-does not require confirmation. 
+Once confirmation is inhibited, source block evaulation does not
+require any confirmation.
 
 *Exercise* rerun the source block below, and observe that confirmation
 is not required anymore.
@@ -115,9 +121,6 @@ is not required anymore.
 #+RESULTS:
 : Hello again
 
-*Exercise* Access variable documentation: type ~C-h v
-org-confirm-babel-evaluate RET~
-
 ** ~describe-variable~ Access variable documentation
 
 You may show variable documentation using ~C-h v~ keyboard sequence.
@@ -128,8 +131,8 @@ You may show variable documentation using ~C-h v~ keyboard sequence.
 ~C-h b~ buffer show keyboard bindings, and searching in that buffer for
 ~C-h v~ you find it is bound to function ~describe-variable~.
 
-*Exercise* run ~C-c C-c~ on source block to access documentation of
-variable ~org-confirm-babel-evaluate~.
+*Exercise* run ~C-c C-c~ on source block below to access documentation
+of ~org-confirm-babel-evaluate~ -variable.
 
 #+BEGIN_SRC elisp :eval no-export
 (describe-variable 'org-confirm-babel-evaluate)
@@ -173,7 +176,7 @@ This section introduces shell support in emacs org.
 *** Hello World (shell version)
  
  Below is shell scrip hello world version. Initially (in vanilla emacs
- setup), it reports an error ~org-babel-execute function for shell~
+ setup), it reports an error ~no org-babel-execute function for shell~
  because shell scripting is not activated
 
  #+name: hello-world-shell
@@ -181,8 +184,8 @@ This section introduces shell support in emacs org.
  echo Hello world from shell
  #+END_SRC
 
-The source block is given a name ~hello-world-shell~, which we make a
-call to in the next section.
+*Notice*, that the source block is given a name ~hello-world-shell~,
+which we make a call to in the next section.
 
 *** Configuring emacs: Enable shell language in emacs
 
@@ -200,8 +203,8 @@ below (C-c C-c source block)
 
 #+RESULTS:
 
-Once shell -language is actiaved call to ~hello-world-shell~
-succeeds. Notice that here we are making a call to named source block
+Once shell -language is actiaved evaluation of ~hello-world-shell~
+-source block succeeds. Here we are calling to a named source block
 ~hello-world-shell~.
 #+call: hello-world-shell()
 

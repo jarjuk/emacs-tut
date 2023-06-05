@@ -28,7 +28,7 @@ or simply using associated script
 ./org-primer.sh
 #+end_example>
 
-or even in more cleanup environment (=empty ~tmp~ directory)
+or even in a cleaner environment (=empty ~tmp~ directory)
 
 #+begin_example
 ./org-primer.sh --cleanup

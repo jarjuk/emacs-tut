@@ -1,5 +1,5 @@
 Primer  *emacs with org-mode*.
-
+>
 Quote from https://orgmode.org/manual/Document-Structure.html
 
 #+begin_quote
@@ -301,6 +301,10 @@ repository, and especially that it does not pointo to =~/.emacs.d/=
  https://www.emacswiki.org/emacs/ELPA. Install use-package, unless it
  is already installed.
 
+ *Notice* If ~use-package~ has not been installed, the evaluating
+  source block below downloads the package from emacs
+  repositories. You may notice messages flickering on editor bottom
+  row.
 
  #+BEGIN_SRC elisp
    ;; Packages: https://www.emacswiki.org/emacs/ELPA
@@ -393,7 +397,9 @@ text system.
 
 The code above defines key binging ~C-c b~ to run lisp function
 ~org-babel-tangle-block~, which writes block under point to a
-file. See example below.
+file. Later, we are using this function to write yas-snippets
+(=templates in emacs) to snippet directory.
+
 
 *** Example: Output source block to file: tangle
 
@@ -493,21 +499,17 @@ for yas org-mode template snippets exists.
 
 #+RESULTS:
 
+Initially, or if this primer was started with ~--cleanup~ -option,
+snippet directory is empty. 
 
 #+BEGIN_SRC bash :eval no-export :results output
 ls -ltr tmp/snippets/org-mode
 #+END_SRC
 
 #+RESULTS:
-: total 25
-: -rw-rw-r-- 1 jj jj 665 kesä    4 14:46 img-deployment
-: -rw-rw-r-- 1 jj jj 126 kesä    4 15:04 src-bash
-: -rw-rw-r-- 1 jj jj 111 kesä    4 15:13 src-lisp
-: -rw-rw-r-- 1 jj jj 129 kesä    4 15:24 org-var
-: -rw-rw-r-- 1 jj jj 415 kesä    4 22:19 src-sed
 
 *** Tangle some yas-snippets
-**** src-bash
+**** ~src-bash~: snippet to run bash shell
 
 Tangle following source block into file
 ~tmp/snippets/org-mode/src-bash~. (Notice somewhat dirtyish trick of
@@ -543,7 +545,7 @@ block for running shell scripts within emacs.
 Try it below
 src-bash
 
-**** ~src-lisp~ -yas-snippet
+**** ~src-lisp~: snippet to run lisp function
 
 Tangle following source block with ~C-c b~
 #+begin_src txt :tangle tmp/snippets/org-mode/src-lisp
@@ -782,7 +784,7 @@ Try:
 - ~M-x~: function completions with partial match eg. ~yas sn~ lists
   commands with matches
 
-** Examples using ~dir~ source block directive
+** ~tramp~: remote access over ssh
 *** Example: Source block directives: dir
 
  Define source named source block ~pwd-ls~, which outputs current
@@ -961,8 +963,10 @@ Try:
  #+RESULTS:
  : [yas] Prepared just-in-time loading of snippets successfully.
 
- Call yas-sinnet ~src-sed~ to add section defining ssh alias ~demo_ip~
- in ~/.ssh/config~
+ Create bash block, which creates ssh alias in =~/.ssh/config=. 
+
+ *Exercise* modify IP address in the source block and evaluate it to
+ create ssh alias ~org_primer_demo~
 
  #+BEGIN_SRC bash :eval no-export :results output
  FILE=~/.ssh/config
@@ -975,10 +979,10 @@ Try:
 
  cat <<HERE | tee -a $FILE
  # $START
- host jrr1
+ host org_primer_demo
       user pi
       IdentityFile ~/.ssh/id_rsa
-      hostname 192.168.100.100
+      hostname 192.168.110.150
  # $END
  HERE
 
@@ -987,14 +991,15 @@ Try:
  #+RESULTS:
  : modifying /home/jj/.ssh/config on host 'eero'
  : # added from org-document org-primer.org - start
- : host jrr1
+ : host org_primer_demo
  :      user pi
  :      IdentityFile ~/.ssh/id_rsa
- :      hostname 192.168.100.100
+ :      hostname 192.168.110.150
  : # added from org-document org-primer.org - end
 
 
- Create named source block ~tramp-greeting~
+ Create named source block ~tramp-greeting~, and evaluate it with ~C-c
+ C-c~. Expect that greeting is executed on your own host.
 
  #+name: tramp-greeting
  #+BEGIN_SRC bash :eval no-export :results output :var WHOM="world"
@@ -1002,32 +1007,49 @@ Try:
  #+END_SRC
 
  #+RESULTS: tramp-greeting
- : Greetings to world from eero on su 4.6.2023 16.51.37 +0300
+ : Greetings to world from eero on ma 5.6.2023 14.57.09 +0300
 
 
- Assuming that you have distributed =~/.ssh/id_rsa= -identity to
- machine in ~$IP~ -address, e.g. using a command such as
+ *Exercise* Distribute your ssh -identity referenced in the alias
+ (=~/.ssh/id_rsa=) machine in ~$IP~ -address, e.g. using
+ a command such as
 
  #+begin_example
  ssh-copy-id -i ~/.ssh/id_rsa pi@$IP
  #+end_example
 
- then calling source block using ~:dir /ssh:jrr1:~ -directive and
- variable ~WHOM="moon"~ is run on ~$IP~ -address:
+ *Exercise* call source block using ~:dir /ssh:org_primer_demo:~
+ -directive. Pass variable ~WHOM="moon"~ to the block. Expect to see
+ greeting executed on alias machine.
 
- #+call: tramp-greeting[:dir /ssh:jrr1:](WHOM="moon")
-
- #+RESULTS:
- : Greetings to moon from jrr1 on Sun Jun 4 16:55:55 EEST 2023
-
-**** TODO ~tramp~ with dir
-
- #+BEGIN_SRC elisp :eval no-export
- (dired ".")
- #+END_SRC
+ #+call: tramp-greeting[:dir /ssh:org_primer_demo:](WHOM="moon")
 
  #+RESULTS:
- : #<buffer emacs-tut>
+ : Greetings to moon from welleri on Mon Jun 5 14:57:19 EEST 2023
+
+*** Remote file access 
+
+Follow link: [[file:tmp]] to open directory tmp on local machine
+
+Follow link: [[/ssh:org_primer_demo:]] open home directory of alias uses
+pointed by ~org_primer_demo~ ssh -alias. You may open files and edit
+those files "in a  normal way"
+
+*** Local and remote shell
+
+Run ~M-x shell RET~ in this buffer to open eshell in current working
+directory. Close the shell with ~C-x k~ (which buffer to close
+(=*shell*=), asks for confirmation.
+
+
+Follow link: [[/ssh:org_primer_demo:]] to open home directory of alias
+uses pointed by ~org_primer_demo~ ssh -alias. In that remote buffer
+run ~M-x shell RET~ to open remote eshell.
+
+
+
+
+
 
 ** Deeper into emacs universe
 

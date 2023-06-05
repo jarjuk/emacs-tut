@@ -400,7 +400,6 @@ The code above defines key binging ~C-c b~ to run lisp function
 file. Later, we are using this function to write yas-snippets
 (=templates in emacs) to snippet directory.
 
-
 *** Example: Output source block to file: tangle
 
 Define a named source block ~ls-tmp~ to show content of ~tmp~
@@ -610,6 +609,23 @@ Test variable value by executing the source block below.
 #+BEGIN_SRC bash :eval no-export :results output 
 echo NAME=$NAME
 #+END_SRC
+
+**** Hint: Edit snippets directly
+
+In this primer, we have been tangling snippets and reloading them
+separately, mainly for two reasons
+- to minimize external depencies in this document 
+- to demonstrate the possiblity to created files using
+  org-documents. This may be usefull, for example, when building
+  embedded systems without editor support.
+
+Normally, we would browse snippet directory, edit snippets in place,
+and allow yas-snippet automagically to reload the modified snippets.
+
+*Exercise*: Follow the link [[file:tmp/snippets/org-mode]] (~C-c C-o~ over
+the link, if it does not work use ~C-u C-c C-o~ i.e. prefix the
+command), and edit some snippet. Save and observe automagic reload.
+
 
 *** ~plantuml-mode~: PlantUML is a component that allows you to quickly diagrams
 

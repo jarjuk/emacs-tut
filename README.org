@@ -3,8 +3,8 @@
 1) [[file:emacs-primer.org]] : In Finnish, my personal view how emacs
    keybings should be presented - TL;DR; C-g and C-h are the only keys
    you need to know ;)
-2) [[file:org-primer.org]] : Primer how to org-mode w. some use cases and
-   supporting configurations w. examples
+2) [[file:org-primer.org]] : Primer helping to understand emacs and
+   org-mode. Includes some examples.
 3) [[file:emacs-admin.org]] : The first version for your own emacs
    configuration (to be expanded)
 

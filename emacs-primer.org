@@ -144,3 +144,15 @@ Esimerkiksi C-c C-o
   emacs bufferiin
 - linkkiin http://www.google.com avaa selaimen
 
+*Muutoslogi*
+
+Emacs:iin on kovakoodattu mukaan muutosloki. Muutosloki on ensimmäinen
+ChangeLog -niminen tiedost hakemistohierasissa ylöspäin.
+
+*Harjoitus* Avaa ChangeLog tiedosto: C-x C-f komennolla ja
+kirjoittamalla Ch TAB avautuvaan promptiin. TAB näppäimen jälkeen
+pitäisi täydentyä ChangeLog, jonka voi kuitata RET
+-näppäimellä. ChangeLog tiedoston voi sulkea C-x 0 -komennolla.
+
+*Harjoitus* Avaa muutostosloki C-x 4 a. Lisää sinne kommentti ja
+ talleta se C-x C-s komennolla ja sulje muutosloki C-x 0 komennolla.

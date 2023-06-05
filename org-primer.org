@@ -75,8 +75,9 @@ name of the function and RET.
 
 *** Example: Hello world  w. parameter (lisp version)
 
-Create a named ~hello-whom~ source block accepting parameter
-~WHOM~. Give a name ~hello-whom~ to the source block
+Create a source block accepting a parameter ~WHOM~. Give a name
+~hello-whom~ to the source block. Evaluate the source block with ~C-c
+C-c~, as a result expect the familiar greeting.
 
  #+name: hello-whom
  #+BEGIN_SRC elisp :var WHOM="world"
@@ -88,12 +89,12 @@ Create a named ~hello-whom~ source block accepting parameter
 
 
 Calling name source block ~hello-whom~, and pass paremeter binding
-~WHOM="moon"~, expect greetings sent to moon.
+~WHOM="moon"~. Now, expect greetings sent to the Moon.
 
-#+call: hello-whom(WHOM="moon")
+#+call: hello-whom(WHOM="Moon")
 
 #+RESULTS:
-: Hello moon!
+: Hello Moon!
 ** ~org-confirm-babel-evaluate~: confirmation in source block evaluation 
 
 Emacs defines configuration variables to change its behaviour.
@@ -108,8 +109,8 @@ block below with ~C-c C-c~:
 
 #+RESULTS:
 
-Once confirmation is inhibited, source block evaulation does not
-require any confirmation.
+Once the confirmation is inhibited, source block evaulation does not
+ask for permission.
 
 *Exercise* rerun the source block below, and observe that confirmation
 is not required anymore.
@@ -128,15 +129,43 @@ You may show variable documentation using ~C-h v~ keyboard sequence.
 *Exercise* use ~C-h v~ to read documentation of variable
 ~org-confirm-babel-evaluate~.
 
-~C-h b~ buffer show keyboard bindings, and searching in that buffer for
-~C-h v~ you find it is bound to function ~describe-variable~.
-
 *Exercise* run ~C-c C-c~ on source block below to access documentation
 of ~org-confirm-babel-evaluate~ -variable.
 
 #+BEGIN_SRC elisp :eval no-export
 (describe-variable 'org-confirm-babel-evaluate)
 #+END_SRC
+
+~C-h b~ buffer show keyboard bindings, and searching in that buffer for
+~C-h v~ you find it is bound to function ~describe-variable~.
+
+*Exercise* Use ~C-h f~ o find documentation for the function
+~describe-variable~.
+
+*Exercise* Find the documentation of the function ~describe-variable~
+using the source block below (=use ~C-c C-c~ to evaluate the source block)
+
+#+BEGIN_SRC elisp :eval no-export 
+(describe-function 'describe-variable)
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+describe-variable is an autoloaded interactive compiled Lisp function
+in ‘help-fns.el’.
+
+Its keys are remapped to ‘counsel-describe-variable’.  Without this
+remapping, it would be bound to C-h v, <f1> v, <help> v, <menu-bar>
+<help-menu> <describe> <describe-variable>.
+
+(describe-variable VARIABLE &optional BUFFER FRAME)
+
+Display the full documentation of VARIABLE (a symbol).
+Returns the documentation as a string, also.
+If VARIABLE has a buffer-local value in BUFFER or FRAME
+(default to the current buffer and current frame),
+it is displayed along with the global value.
+#+end_example
 
 ** Some usefull (=essential?) emacs confgurations
 

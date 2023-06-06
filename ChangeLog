@@ -1,5 +1,7 @@
 2023-06-06  jj  <jj@eero>
 
+	* emacs-admin.org (~yasnippet~ -  template system for emacs): tangle no added
+
 	* org-primer.org (~src-sed~: add section of edits to a file):
 	moved to a different position
 	(Example: Source block directives: dir): added separate example 

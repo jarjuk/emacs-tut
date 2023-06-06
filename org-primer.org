@@ -45,16 +45,16 @@ To open/close: outline
 * Org-mode primer
 ** Hint: formatting in org documents
 
-Org mode implements simple formattig:
+Org mode implements simple formatting:
 
-- tilde -character around text marks ~code~ format
-- equal -signs around text marks also =code= format
-- /italics/ with slash characters
+- tilde -character around the text marks ~code~ format
+- equal -signs around the text marks also =code= format
+- /italics/ with slash characters 
 - *bold* with asterisks 
 
 ** emacs speaks natively lisp, org-mode implements source-blocks
 Natively emacs speaks only lisp. Other languages need to be activated,
-and possibly extension should be loaded to support the language.
+and possibly extensions should be loaded to support the language.
 
 Lisp is mainly used to configure emacs in =~/.emacs.d/init.el= file.
 However, it is good to realize that emacs functionality is implemented
@@ -224,10 +224,10 @@ Once support for shell -language is activated, evaluation of
 
 ** Ensure that ~user-emacs-directory~ -variable is correctly set
 
-In this primer, we assumme empty emacs configuration.  Partly, because
+In this primer, we assume empty emacs configuration.  Partly, because
 we do not want override any existing configrations in directory
 =~/.emacs.d/=. Partly, because starting from an empty configuration,
-we more easily demontrate the working of emacs.
+we can more easy demonstrate the working of emacs.
 
 *Notice 1*: The source block below uses ~:eval no~ preventing its
 re-evaluation.
@@ -1143,8 +1143,8 @@ echo IP=$IP
 : IP=192.168.100.102
 
 Following one-liner ;) opens xterm window running ssh session on
-~org_primer_demo~ ssh alias. This ssh -session tails syslog on that
-remote machine. 
+~org_primer_demo~ remote. This ssh -session tails syslog on that
+remote machine.
 
 
 
@@ -1156,10 +1156,10 @@ remote machine.
 #+RESULTS: syslog-tail
 
 Agree, that the source block above is somewhat complicated, to say the
-least, but pressing ~C-c C-c~ key combination, replaces a longer
-alternative of launching terminal window, and typing ssh -command. In
-addition, having commands like this adeuately documented helps future
-you, or somebody else, in maintaining the system.
+least. However, pressing ~C-c C-c~ -key combination replaces a longer
+alternative of launching terminal window, and typing the ssh
+-command. In addition, having commands like this, adequately
+documented, helps future you, or somebody else, in system maintenance.
 
 ** Hint: Some pointers for digging deeper into the Emacs universe
 

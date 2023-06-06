@@ -217,7 +217,7 @@ https://www.reddit.com/r/emacs/comments/9bvawd/use_yasnippet_via_usepackage/
 
 Create directory ~tmp/snippets/org-mode~, unless it exists
 
-#+BEGIN_SRC bash
+#+BEGIN_SRC bash :tangle no
 [ -d ~/.emacs.d/snippets/org-mode ] || mkdir -p ~/.emacs.d/snippets/org-mode
 #+END_SRC
 

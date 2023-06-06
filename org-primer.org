@@ -1149,7 +1149,7 @@ remote machine.
 
 
 #+name: syslog-tail
-#+BEGIN_SRC elisp :noweb yes :results output :eval no-export :exports none 
+#+BEGIN_SRC elisp :noweb yes :results output :eval no-export :exports code
 (start-process "server" "buf-server" "xterm"  "-T" "syslog@org_primer_demo" "-hold" "-e"  "bash" "-c" "ssh org_primer_demo tail -f /var/log/syslog")
 #+END_SRC
 
@@ -1158,8 +1158,8 @@ remote machine.
 Agree, that the source block above is somewhat complicated, to say the
 least, but pressing ~C-c C-c~ key combination, replaces a longer
 alternative of launching terminal window, and typing ssh -command. In
-addition, this having commands like this adeuately documented helps
-future you,or somebody else, in maintaining system in the future.
+addition, having commands like this adeuately documented helps future
+you, or somebody else, in maintaining the system.
 
 ** Hint: Some pointers for digging deeper into the Emacs universe
 

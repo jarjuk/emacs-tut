@@ -60,24 +60,26 @@ Lisp is mainly used to configure emacs in =~/.emacs.d/init.el= file.
 However, it is good to realize that emacs functionality is implemented
 in lisp functions, to which key sequences are bound to.
 
-*Exercise* Open key binding C-h b, and browse for key definitions and
-their bindigs. To find documentation of lisp functionc C-h f, and type
-name of the function and RET.
+*Exercise* Open key binding ~C-h b~, and browse for key definitions
+and their lisp bindigs. To find documentation of lisp functionc ~C-h f~,
+and type name of the function and ~RET~.
 
 *** Example: Hello world (lisp version)
 
- Press C-c C-c within BEGIN_SRC END_SRC lines below (in default
- settings emacs ask for confirmation )
+Press ~C-c C-c~, when cursor within the ~BEGIN_SRC~ ~END_SRC~ block
+below. In default settings, emacs ask for confirmation to evaluate the
+block.
  
  #+BEGIN_SRC elisp :eval no-export
  "Hello world - from lisp block"
  #+END_SRC
 
+
 *** Example: Hello world  w. parameter (lisp version)
 
 Create a source block accepting a parameter ~WHOM~. Give a name
 ~hello-whom~ to the source block. Evaluate the source block with ~C-c
-C-c~, as a result expect the familiar greeting.
+C-c~, and as the result, expect the familiar greeting.
 
  #+name: hello-whom
  #+BEGIN_SRC elisp :var WHOM="world"
@@ -88,20 +90,23 @@ C-c~, as a result expect the familiar greeting.
  : Hello world!
 
 
-Calling name source block ~hello-whom~, and pass paremeter binding
-~WHOM="moon"~. Now, expect greetings sent to the Moon.
+Calling name source block ~hello-whom~, and passing paremeter binding
+~WHOM="moon"~. Now, after evaluation the block, expect greetings sent
+to the Moon.
 
 #+call: hello-whom(WHOM="Moon")
 
-#+RESULTS:
-: Hello Moon!
+
 ** ~org-confirm-babel-evaluate~: confirmation in source block evaluation 
 
-Emacs defines configuration variables to change its behaviour.
+Emacs use various configuration variables to change its behaviour. For
+example, variable ~org-confirm-babel-evaluate~ controls, whether
+source block evaluation requires confirmation, or not.
 
-To turn confirmation off (in current emacs session) by setting
-variable 'org-confirm-babel-evaluate' to nil. Evaluate the source
-block below with ~C-c C-c~:
+To turn confirmation off (in current emacs session) set variable
+~org-confirm-babel-evaluate'~ to nil. 
+
+*Exercise: Evaluate the source block below with ~C-c C-c~:
 
 #+BEGIN_SRC elisp :eval no-export
 (setq org-confirm-babel-evaluate nil)
@@ -112,8 +117,8 @@ block below with ~C-c C-c~:
 Once the confirmation is inhibited, source block evaulation does not
 ask for permission.
 
-*Exercise* rerun the source block below, and observe that confirmation
-is not required anymore.
+*Exercise* run the source block below. Expect no confirmation for the
+evaluation is not required anymore.
 
 #+BEGIN_SRC elisp :eval no-export
 "Hello again"
@@ -122,6 +127,7 @@ is not required anymore.
 #+RESULTS:
 : Hello again
 
+
 ** ~describe-variable~ et. al: Find documentation
 
 You may show variable documentation using ~C-h v~ keyboard sequence.
@@ -129,26 +135,19 @@ You may show variable documentation using ~C-h v~ keyboard sequence.
 *Exercise* use ~C-h v~ to read documentation of variable
 ~org-confirm-babel-evaluate~.
 
-*Exercise* run ~C-c C-c~ on source block below to access documentation
-of ~org-confirm-babel-evaluate~ -variable.
+*Exercise*:  Find function bound to ~C-h v~:
+- Use ~C-h b~ to open buffer showing keyboard bindings, 
+- in that buffer search for line defining ~C-h v~ 
+- on that line you find it is bound to function ~describe-variable~.
+
+Keyboard sequences are bound to lisp function, which we can call from
+org-documents.
+
+*Exercise* run ~C-c C-c~ on source block below to access the
+documentation for ~org-confirm-babel-evaluate~ -variable.
 
 #+BEGIN_SRC elisp :eval no-export
 (describe-variable 'org-confirm-babel-evaluate)
-#+END_SRC
-
-*Exercise*:  Find function bound to ~C-h v~:
-- Use ~C-h b~ to open buffer showing keyboard bindings, 
-- in that buffer search for line with ~C-h v~ 
-- on that line you find it is bound to function ~describe-variable~.
-
-*Exercise* Use ~C-h f~ o find documentation for ~describe-variable~
-function.
-
-*Exercise* Find the same documentation as in the previous exercise
-using lisp snippet below (=use ~C-c C-c~ to evaluate the source block below)
-
-#+BEGIN_SRC elisp :eval no-export 
-(describe-function 'describe-variable)
 #+END_SRC
 
 ** Some usefull (=essential?) emacs confgurations
@@ -196,13 +195,13 @@ This section introduces shell support in emacs org.
  echo Hello world from shell
  #+END_SRC
 
-*Notice*, that the source block is given a name ~hello-world-shell~.
-We are going to call it in the next section.
+*Notice*, that the source block is given a name, ~hello-world-shell~.
+We are going to use it in the next section.
 
 *** Enable shell language in emacs
 
 Support for shell -language can be added with the lisp source block
-below (C-c C-c source block)
+below (~C-c C-c~ source block)
 
 #+BEGIN_SRC elisp :eval no-export
  (org-babel-do-load-languages
@@ -225,20 +224,19 @@ Once support for shell -language is activated, evaluation of
 
 ** Ensure that ~user-emacs-directory~ -variable is correctly set
 
-In this primer, we assumme empty emacs configuration. Also, we do not
-want override any existing configrations in directory =~/.emacs.d/=.
-
-Documentation for variable ~user-emacs-directory~ extracted with
-source block. 
+In this primer, we assumme empty emacs configuration.  Partly, because
+we do not want override any existing configrations in directory
+=~/.emacs.d/=. Partly, because starting from an empty configuration,
+we more easily demontrate the working of emacs.
 
 *Notice 1*: The source block below uses ~:eval no~ preventing its
 re-evaluation.
-
 
 *Notice 2*: The source block uses ~:exports both~, which, in github
 shows both code block and the result block. In export (e.g. output to
 pdf file), it has similar effect.
 
+Show documentation for variable ~user-emacs-directory~:
 
 #+BEGIN_SRC elisp :eval no :exports both
 (describe-variable 'user-emacs-directory)
@@ -260,12 +258,13 @@ See also ‘locate-user-emacs-file’.
 
 
 *Exercise* Evaluate source block below to ensure that we configuring
-emacs in tmp directory (and, especially, *that it does not poin to to
-~/.emacs.d/*
+emacs in tmp directory (and, especially, *that it does not point to to
+~/.emacs.d/*)
 
  #+BEGIN_SRC elisp
  user-emacs-directory
  #+END_SRC
+
 
 ** Basic emacs configuration
 *** ~use-package~: isolate package configurations
@@ -284,9 +283,9 @@ emacs in tmp directory (and, especially, *that it does not poin to to
  is already installed.
 
  *Notice* If ~use-package~ has not been installed, the evaluating
-  source block below downloads the package from emacs
-  repositories. You may notice messages flickering on editor bottom
-  row.
+  source block below downloads required packages from emacs
+  repository. You may notice messages related to this flickering on
+  editor bottom row.
 
  #+BEGIN_SRC elisp
    ;; Packages: https://www.emacswiki.org/emacs/ELPA
@@ -315,7 +314,8 @@ emacs in tmp directory (and, especially, *that it does not poin to to
 *** ~undo-tree~ - C-z keybinding
 
 Undo mechamism, which comes bundled with emacs is somewhat
-convoluted. Following snippet more intuitive way for backtracking.
+convoluted. Following snippet adds a more intuitive way for
+backtracking.
 
 Ref: [[https://elpa.gnu.org/packages/undo-tree.html]]
 
@@ -378,7 +378,7 @@ text system.
 
 
 The code above defines key binging ~C-c b~ to run lisp function
-~org-babel-tangle-block~, which writes block under point to a
+~org-babel-tangle-block~. This function writes block under cursor to a
 file. Later, we are using this function to write yas-snippets
 (=templates in emacs) to snippet directory.
 
@@ -396,20 +396,28 @@ Expect that initially there is not a file ~demo.txt~ in ~tmp~ -
 directory.
 
 #+RESULTS: ls-tmp
-: total 107
-: drwxrwxr-x  3 jj jj     3 kesä    4 10:41 snippets
-: -rw-rw-r--  1 jj jj 27504 kesä    4 14:45 demo2.png
-: -rw-rw-r--  1 jj jj 27504 kesä    4 14:47 deployment.png
-: drwxrwxr-x 19 jj jj    21 kesä    4 17:00 elpa
-: -rw-rw-r--  1 jj jj  1123 kesä    4 17:01 tramp
-: -rw-rw-r--  1 jj jj 27504 kesä    4 17:03 plantuml-demo1.png
-: -rw-------  1 jj jj   351 kesä    4 18:02 recentf
+: total 83
+: drwxrwxr-x  3 jj jj     3 kesä    5 13:39 snippets
+: -rw-rw-r--  1 jj jj 27504 kesä    5 13:49 plantuml-demo1.png
+: -rw-rw-r--  1 jj jj 27710 kesä    5 13:50 koe2.png
+: drwxrwxr-x 15 jj jj    17 kesä    5 13:50 elpa
+: -rw-------  1 jj jj   292 kesä    5 14:29 recentf
+: -rw-rw-r--  1 jj jj   718 kesä    6 08:56 tramp
+: -rw-rw-r--  1 jj jj   400 kesä    6 08:58 src-sed-demo.txt
 
+If ~demo.txt~ is shown run ~tangle-demo-clean~
+
+#+call: tangle-demo-clean()
+
+#+RESULTS:
+
+end rerun source block ~ls-tmp~ -again.
 
 
 *Exercise* Move point (=cursor) to the source block below and use key
-binding ~C-c b~ to tangle (=output) file ~tmp/demo.txt~. ~C-c b~
--keybinding was defined earlier, when configuring org-mode.
+binding ~C-c b~ to tangle (=output) file ~tmp/demo.txt~ 
+
+*Notice* ~C-c b~ -keybinding was defined earlier in configuring org-mode.
 
 #+begin_src txt :tangle tmp/demo.txt
 Tangled from org-primer - CHANGES WILL BE OVERRIDDEN
@@ -420,20 +428,23 @@ Rerun ls-tmp, and expect to see ~tmp/demo.txt~ -file created.
 #+call: ls-tmp()
 
 #+RESULTS:
-: total 108
-: drwxrwxr-x  3 jj jj     3 kesä    4 10:41 snippets
-: -rw-rw-r--  1 jj jj 27504 kesä    4 14:45 demo2.png
-: -rw-rw-r--  1 jj jj 27504 kesä    4 14:47 deployment.png
-: drwxrwxr-x 19 jj jj    21 kesä    4 17:00 elpa
-: -rw-rw-r--  1 jj jj  1123 kesä    4 17:01 tramp
-: -rw-rw-r--  1 jj jj 27504 kesä    4 17:03 plantuml-demo1.png
-: -rw-------  1 jj jj   351 kesä    4 18:02 recentf
-: -rw-rw-r--  1 jj jj    53 kesä    4 22:06 demo.txt
+: total 84
+: drwxrwxr-x  3 jj jj     3 kesä    5 13:39 snippets
+: -rw-rw-r--  1 jj jj 27504 kesä    5 13:49 plantuml-demo1.png
+: -rw-rw-r--  1 jj jj 27710 kesä    5 13:50 koe2.png
+: drwxrwxr-x 15 jj jj    17 kesä    5 13:50 elpa
+: -rw-------  1 jj jj   292 kesä    5 14:29 recentf
+: -rw-rw-r--  1 jj jj   718 kesä    6 08:56 tramp
+: -rw-rw-r--  1 jj jj   400 kesä    6 08:58 src-sed-demo.txt
+: -rw-rw-r--  1 jj jj    53 kesä    6 10:10 demo.txt
 
 Cleanup demo file (for the next round :)
+#+name: tangle-demo-clean
 #+BEGIN_SRC bash :eval no-export :results output
 rm -f tmp/demo.txt
 #+END_SRC
+
+#+RESULTS: tangle-demo-clean
 
 #+RESULTS:
 
@@ -471,8 +482,9 @@ https://www.reddit.com/r/emacs/comments/9bvawd/use_yasnippet_via_usepackage/
 
 *** Ensure directory ~tmp/snippets/org-mode~ exists
 
-Bash source block, which ensures ~tmp/snippets/org-mode~ -directory
-for yas org-mode template snippets exists.
+Bash source block ensures that direcotory ~tmp/snippets/org-mode~
+exists. It is the place, where yas expects to find template -snippets
+for org-mode.
 
 #+BEGIN_SRC bash
 [ -d tmp/snippets/org-mode ] || mkdir -p tmp/snippets/org-mode
@@ -487,7 +499,6 @@ snippet directory is empty.
 ls -ltr tmp/snippets/org-mode
 #+END_SRC
 
-#+RESULTS:
 
 *** Tangle some yas-snippets
 **** ~src-bash~: snippet to run bash shell
@@ -692,15 +703,14 @@ cat tmp/src-sed-demo.txt
 : - or shell expansions hostname: eero, date: ti 6.6.2023 08.58.48 +0300
 : # added from org-document org-primer.org - end
 
-
 **** Hint: Edit snippets directly
 
 In this primer, we have been tangling snippets and reloading them
 separately, mainly for two reasons
 - to minimize external depencies in this document 
-- to demonstrate the possiblity to created files using
+- to demonstrate the possiblity to create files from
   org-documents. This may be usefull, for example, when building
-  embedded systems without editor support.
+  embedded systems, which may be lacking editor support.
 
 Normally, we would browse snippet directory, edit snippets in place,
 and allow yas-snippet automagically to reload the modified snippets.
@@ -712,7 +722,6 @@ command), and edit some snippet. Save and observe automagic reload.
 *** ~plantuml-mode~: PlantUML is a component that allows you to quickly diagrams
 
 This section assumes that yas-snippets have been installed.
-
 
 Ref: 
 - https://github.com/skuro/plantuml-mode
@@ -839,7 +848,8 @@ After tanling, reload yas-snippets by calling yas-reload
 : [yas] Prepared just-in-time loading of snippets successfully.
 
 
-Press ~TAB~ end of next line to create yas-snippet.
+Press ~TAB~ at end of next line (= immediately after ~img-deployment~
+string) to create source block plantuml:
 img-deployment
 
 *** ~ivy~: generic completion mechanism for Emacs

@@ -19,7 +19,7 @@ Run
 git clone https://github.com/jarjuk/emacs-tut
 #+end_example
 
-and change working 
+and change the working directory
 
 #+begin_example
 cd emacs-tut
@@ -28,7 +28,7 @@ cd emacs-tut
 
 *Notice*
 
-~org-primer.org~ should be run using empty emacs setup (=without
+~org-primer.org~ should be run using empty emacs setup (= without
 =~/.emacs.d/init.el=, =~/.emacs= etc. configuration). This can be done
 running
 

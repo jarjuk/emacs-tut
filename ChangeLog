@@ -1,3 +1,10 @@
+2023-06-06  jj  <jj@eero>
+
+	* org-primer.org (~src-sed~: add section of edits to a file):
+	moved to a different position
+	(Example: Source block directives: dir): added separate example 
+	(Example: ~tramp~: remote access over ssh): comprensively rewritten
+
 2023-06-05  jj  <jj@eero>
 
 	* emacs-admin.org (~ivy~: generic completion mechanism for Emacs): first version

@@ -267,7 +267,6 @@ emacs in tmp directory (and, especially, *that it does not poin to to
  user-emacs-directory
  #+END_SRC
 
-
 ** Basic emacs configuration
 *** ~use-package~: isolate package configurations
 
@@ -593,6 +592,107 @@ Test variable value by executing the source block below.
 echo NAME=$NAME
 #+END_SRC
 
+**** ~src-sed~: add section of edits to a file
+
+We create a yas-snippet to edit file. The script keeps editions
+wrapped with comment lines to help replacing the changes.
+
+Tangle the snippet with ~C-c B~
+#+begin_src txt :tangle tmp/snippets/org-mode/src-sed
+# -*- mode: snippet -*-
+# name: src-sed
+# key: src-sed
+# --
+
+#+BEGIN_SRC bash :eval no-export :results output
+FILE=${1:file_to_edit}
+START="`(concat "added from org-document " (buffer-name) " - start")`"
+END="`(concat "added from org-document " (buffer-name) " - end")`"
+
+echo "modifying $FILE on host '$(hostname)'"
+
+sed -i -e "/$START/,/$END/d" $FILE
+
+cat <<HERE | tee -a $FILE
+# $START
+$0
+# $END
+HERE
+
+,#+END_SRC
+
+#+end_src
+
+
+#+call: yas-reload()
+
+#+RESULTS:
+: [yas] Prepared just-in-time loading of snippets successfully.
+
+Testing it
+
+First create a file
+#+BEGIN_SRC bash :eval no-export :results output
+echo Exampele file for using src-sed yas-snippet >tmp/src-sed-demo.txt
+#+END_SRC
+
+#+RESULTS:
+
+
+The source block below was created by typing ~src-sed RET~. 
+
+*Exercise* modify text inside ~HERE~ document, and rerun the source
+block below. Expect to see file content wrapped inside ~START-END~
+lines to change.
+
+#+BEGIN_SRC bash :eval no-export :results output
+FILE=tmp/src-sed-demo.txt
+START="added from org-document org-primer.org - start"
+END="added from org-document org-primer.org - end"
+
+echo "modifying $FILE on host '$(hostname)'"
+
+sed -i -e "/$START/,/$END/d" $FILE
+
+cat <<HERE | tee -a $FILE
+# $START
+Theses lines are added to $FILE
+- edits are wrapped within START-END block
+- rerunning this source block replaces content inside START-END block
+- we may even add variables $IP
+- or shell expansions hostname: $(hostname), date: $(date)
+# $END
+HERE
+
+#+END_SRC
+
+#+RESULTS:
+: modifying tmp/src-sed-demo.txt on host 'eero'
+: # added from org-document org-primer.org - start
+: Theses lines are added to tmp/src-sed-demo.txt
+: - edits are wrapped within START-END block
+: - rerunning this source block replaces content inside START-END block
+: - we may even add variables 
+: - or shell expansions hostname: eero, date: ti 6.6.2023 08.58.48 +0300
+: # added from org-document org-primer.org - end
+
+Show content of demo file ~tmp/src-sed-demo.txt~
+
+#+BEGIN_SRC bash :eval no-export :results output
+cat tmp/src-sed-demo.txt
+#+END_SRC
+
+#+RESULTS:
+: Exampele file for using src-sed yas-snippet
+: # added from org-document org-primer.org - start
+: Theses lines are added to tmp/src-sed-demo.txt
+: - edits are wrapped within START-END block
+: - rerunning this source block replaces content inside START-END block
+: - we may even add variables 
+: - or shell expansions hostname: eero, date: ti 6.6.2023 08.58.48 +0300
+: # added from org-document org-primer.org - end
+
+
 **** Hint: Edit snippets directly
 
 In this primer, we have been tangling snippets and reloading them
@@ -608,7 +708,6 @@ and allow yas-snippet automagically to reload the modified snippets.
 *Exercise*: Follow the link [[file:tmp/snippets/org-mode]] (~C-c C-o~ over
 the link, if it does not work use ~C-u C-c C-o~ i.e. prefix the
 command), and edit some snippet. Save and observe automagic reload.
-
 
 *** ~plantuml-mode~: PlantUML is a component that allows you to quickly diagrams
 
@@ -783,8 +882,7 @@ Try:
 - ~M-x~: function completions with partial match eg. ~yas sn~ lists
   commands with matches
 
-** Example: ~tramp~: remote access over ssh
-*** Example: Source block directives: dir
+** Example: Source block directives: dir
 
  Define source named source block ~pwd-ls~, which outputs current
  working directory and show its content.
@@ -801,15 +899,20 @@ Try:
  #+RESULTS: pwd-ls
  #+begin_example
  /home/jj/work/emacs-tut
- total 40
+ total 85
+ -rw-rw-r-- 1 jj jj   952 kesä    6 08:20 ChangeLog
+ -rw-rw-r-- 1 jj jj   116 kesä    5 08:20 ChangeLog~
  -rw-rw-r-- 1 jj jj   137 kesä    3 11:28 demo-init.el
- -rw-rw-r-- 1 jj jj  5359 kesä    3 19:34 emacs-primer.org
- -rwxr-xr-x 1 jj jj    40 kesä    4 10:11 emacs-tut.sh
- -rw-rw-r-- 1 jj jj 14373 kesä    4 14:39 org-primer.org
- -rw-rw-r-- 1 jj jj 11218 kesä    4 10:50 org-primer.org~
- -rw-rw-r-- 1 jj jj    55 kesä    3 11:18 README.md
- -rw-rw-r-- 1 jj jj    59 kesä    3 11:19 README.org
- drwxrwxr-x 4 jj jj     6 kesä    4 14:33 tmp
+ -rw-rw-r-- 1 jj jj  6189 kesä    5 16:48 emacs-admin.org
+ -rw-rw-r-- 1 jj jj  7118 kesä    5 12:55 emacs-primer.org
+ -rw-rw-r-- 1 jj jj  5810 kesä    4 21:17 emacs-primer.org~
+ -rwxr-xr-x 1 jj jj    40 kesä    4 10:11 emacs-tut.sh~
+ drwxrwxr-x 2 jj jj     3 kesä    4 14:57 jar
+ -rw-rw-r-- 1 jj jj 31804 kesä    6 09:02 org-primer.org
+ -rw-rw-r-- 1 jj jj 22057 kesä    4 21:59 org-primer.org~
+ -rwxr-xr-x 1 jj jj   867 kesä    5 09:53 org-primer.sh
+ -rw-rw-r-- 1 jj jj  1275 kesä    5 16:40 README.org
+ drwxrwxr-x 4 jj jj    10 kesä    6 08:58 tmp
  #+end_example
 
 
@@ -825,12 +928,12 @@ Try:
 
  #+RESULTS:
  : /home/jj/work/emacs-tut/tmp
- : demo2.png
- : deployment.png
  : elpa
+ : koe2.png
  : plantuml-demo1.png
  : recentf
  : snippets
+ : src-sed-demo.txt
  : tramp
 
  Header directives can be added also source block calls. Calling
@@ -841,19 +944,20 @@ Try:
  #+RESULTS:
  #+begin_example
  /home/jj/work/emacs-tut
- total 64
+ total 85
+ -rw-rw-r-- 1 jj jj   952 kesä    6 08:20 ChangeLog
+ -rw-rw-r-- 1 jj jj   116 kesä    5 08:20 ChangeLog~
  -rw-rw-r-- 1 jj jj   137 kesä    3 11:28 demo-init.el
- -rw-rw-r-- 1 jj jj     4 kesä    4 18:01 emacs-admin.org
- -rw-rw-r-- 1 jj jj  5853 kesä    4 21:33 emacs-primer.org
+ -rw-rw-r-- 1 jj jj  6189 kesä    5 16:48 emacs-admin.org
+ -rw-rw-r-- 1 jj jj  7118 kesä    5 12:55 emacs-primer.org
  -rw-rw-r-- 1 jj jj  5810 kesä    4 21:17 emacs-primer.org~
- -rwxr-xr-x 1 jj jj   210 kesä    4 18:06 emacs-tut.sh
  -rwxr-xr-x 1 jj jj    40 kesä    4 10:11 emacs-tut.sh~
  drwxrwxr-x 2 jj jj     3 kesä    4 14:57 jar
- -rw-rw-r-- 1 jj jj 23116 kesä    4 22:09 org-primer.org
+ -rw-rw-r-- 1 jj jj 31805 kesä    6 09:02 org-primer.org
  -rw-rw-r-- 1 jj jj 22057 kesä    4 21:59 org-primer.org~
- -rw-rw-r-- 1 jj jj    55 kesä    3 11:18 README.md
- -rw-rw-r-- 1 jj jj   440 kesä    4 17:43 README.org
- drwxrwxr-x 4 jj jj    10 kesä    4 22:06 tmp
+ -rwxr-xr-x 1 jj jj   867 kesä    5 09:53 org-primer.sh
+ -rw-rw-r-- 1 jj jj  1275 kesä    5 16:40 README.org
+ drwxrwxr-x 4 jj jj    10 kesä    6 08:58 tmp
  #+end_example
 
 
@@ -864,175 +968,147 @@ Try:
 
  #+RESULTS:
  : /home/jj/work/emacs-tut/tmp
- : total 107
- : -rw-rw-r--  1 jj jj 27504 kesä    4 14:45 demo2.png
- : -rw-rw-r--  1 jj jj 27504 kesä    4 14:47 deployment.png
- : drwxrwxr-x 19 jj jj    21 kesä    4 17:00 elpa
- : -rw-rw-r--  1 jj jj 27504 kesä    4 17:03 plantuml-demo1.png
- : -rw-------  1 jj jj   351 kesä    4 18:02 recentf
- : drwxrwxr-x  3 jj jj     3 kesä    4 10:41 snippets
- : -rw-rw-r--  1 jj jj  1123 kesä    4 17:01 tramp
+ : total 83
+ : drwxrwxr-x 15 jj jj    17 kesä    5 13:50 elpa
+ : -rw-rw-r--  1 jj jj 27710 kesä    5 13:50 koe2.png
+ : -rw-rw-r--  1 jj jj 27504 kesä    5 13:49 plantuml-demo1.png
+ : -rw-------  1 jj jj   292 kesä    5 14:29 recentf
+ : drwxrwxr-x  3 jj jj     3 kesä    5 13:39 snippets
+ : -rw-rw-r--  1 jj jj   400 kesä    6 08:58 src-sed-demo.txt
+ : -rw-rw-r--  1 jj jj   718 kesä    6 08:56 tramp
 
-*** Example: running source block on host machine
+** Example: ~tramp~: remote access over ssh
     :PROPERTIES:
-    :header-args+: :var  IP="192.168.100.100"
+    :header-args+: :var  IP="192.168.100.102"
     :END:
 
- This chapter presents, how source block ~:dir~ -directive can even
- make the source block to execute in a different machine.
+    In this chapter we are accessing service with the IP address given
+    in /property drawer/ above. Configure IP address to machine, which
+    you have access to. To able to run some of the exercises in this
+    chapter, Update the IP for an address to machine that you have
+    access to.
 
- In this example we are accessing service with the IP address given in
- the /property drawer/ above. Configure IP address to machine, which
- you have access to.
+    *Exercise* run source block to show IP address in use.
+    #+BEGIN_SRC bash :eval no-export :results output
+    echo IP=$IP
+    #+END_SRC
 
-**** Ping IP
+    #+RESULTS:
+    : IP=192.168.100.102
 
- Show the IP -address we are using:
+    *Exercise* Ping the to see that we have a TCP/IP connection to it.
 
- #+BEGIN_SRC bash :eval no-export :results output
- echo IP=$IP
- #+END_SRC
+    #+BEGIN_SRC bash :eval no-export :results output
+    ping -c 3 $IP
+    #+END_SRC
 
- #+RESULTS:
- : IP=192.168.100.100
+#+RESULTS:
+: PING 192.168.100.102 (192.168.100.102) 56(84) bytes of data.
+: 64 bytes from 192.168.100.102: icmp_seq=1 ttl=64 time=180 ms
+: 64 bytes from 192.168.100.102: icmp_seq=2 ttl=64 time=18.1 ms
+: 64 bytes from 192.168.100.102: icmp_seq=3 ttl=64 time=12.9 ms
+: 
+: --- 192.168.100.102 ping statistics ---
+: 3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+: rtt min/avg/max/mdev = 12.875/70.256/179.745/77.450 ms
 
- Pinging to machine to see that we have TCP/IP connection to it.
-
- #+BEGIN_SRC bash :eval no-export :results output
- ping -c 3 $IP
- #+END_SRC
-
- #+RESULTS:
- : PING 192.168.100.100 (192.168.100.100) 56(84) bytes of data.
- : 64 bytes from 192.168.100.100: icmp_seq=1 ttl=64 time=8.65 ms
- : 64 bytes from 192.168.100.100: icmp_seq=2 ttl=64 time=14.6 ms
- : 64 bytes from 192.168.100.100: icmp_seq=3 ttl=64 time=9.72 ms
- : 
- : --- 192.168.100.100 ping statistics ---
- : 3 packets transmitted, 3 received, 0% packet loss, time 2004ms
- : rtt min/avg/max/mdev = 8.646/10.978/14.568/2.575 ms
-
-**** ~src-sed~
+*** ~org_primer_demo~ ssh -alias: Enable ssh access to remote IP
 
 
- We create a yas-snippet to edit file. The script keeps editions
- wrapped with comment lines to help replacing the changes.
+*Exercise* Distribute your ssh -identity to the machine on IP address.
+For example, to copy ssh identity =~/.ssh/id_rsa= to ~$IP~ -address
+with user ~pi~ use a command.
 
- Tangle the snippet with ~C-c B~
- #+begin_src txt :tangle tmp/snippets/org-mode/src-sed
- # -*- mode: snippet -*-
- # name: src-sed
- # key: src-sed
- # --
+*Notice* We need to run ~ssh-copy-id~ -command using a normal terminal
+window, because ssh asks for credentials, which must be entered from
+keyboard.
 
- #+BEGIN_SRC bash :eval no-export :results output
- FILE=${1:file_to_edit}
- START="`(concat "added from org-document " (buffer-name) " - start")`"
- END="`(concat "added from org-document " (buffer-name) " - end")`"
+#+begin_example
+ssh-copy-id -i ~/.ssh/id_rsa pi@$IP
+#+end_example
 
- echo "modifying $FILE on host '$(hostname)'"
+Source block below creates a ssh -alias ~org_primer_demo~ in
+~/.ssh/config~ -file. Modifications are wrapped within ~START-END~.
 
- sed -i -e "/$START/,/$END/d" $FILE
+*Exercise* modify ssh-identity address in the source block block (IP
+-address is taken from ~$IP~ -property, configured above). Evaluate
+the source block to create ssh alias ~org_primer_demo~
 
- cat <<HERE | tee -a $FILE
- # $START
- $0
- # $END
- HERE
+#+BEGIN_SRC bash :eval no-export :results output
+FILE=~/.ssh/config
+START="added from org-document org-primer.org - start"
+END="added from org-document org-primer.org - end"
 
- ,#+END_SRC
+echo "modifying $FILE on host '$(hostname)'"
 
- #+end_src
+sed -i -e "/$START/,/$END/d" $FILE
 
+cat <<HERE | tee -a $FILE
+# $START
+host org_primer_demo
+     user pi
+     IdentityFile ~/.ssh/id_rsa
+     hostname $IP
+# $END
+HERE
 
- #+call: yas-reload()
+#+END_SRC
 
- #+RESULTS:
- : [yas] Prepared just-in-time loading of snippets successfully.
+#+RESULTS:
+: modifying /home/jj/.ssh/config on host 'eero'
+: # added from org-document org-primer.org - start
+: host org_primer_demo
+:      user pi
+:      IdentityFile ~/.ssh/id_rsa
+:      hostname 192.168.100.102
+: # added from org-document org-primer.org - end
 
-**** ~tramp~ with source blocks
+*** Run source block in a remote machine
 
- Emacs comes bundled with TRAMP https://www.gnu.org/software/tramp/
+Emacs comes bundled with TRAMP https://www.gnu.org/software/tramp/
 
- #+begin_quote
- TRAMP stands for “Transparent Remote (file) Access, Multiple Protocol”
- #+end_quote
+#+begin_quote
+TRAMP stands for “Transparent Remote (file) Access, Multiple Protocol”
+#+end_quote
 
+A named source block ~tramp-greeting~ echos greeting to ~$WHOM~
+variable together with the name of the host and timestamp.
 
- #+RESULTS:
- : [yas] Prepared just-in-time loading of snippets successfully.
+*Exercise* Evaluate source block below. Expect to see hostname of your
+computer show, and timestamp to change.
 
- Create bash block, which creates ssh alias in =~/.ssh/config=. 
+#+name: tramp-greeting
+#+BEGIN_SRC bash :eval no-export :results output :var WHOM="world"
+echo Greetings to $WHOM from $(hostname) on $(date)
+#+END_SRC
 
- *Exercise* modify IP address in the source block and evaluate it to
- create ssh alias ~org_primer_demo~
-
- #+BEGIN_SRC bash :eval no-export :results output
- FILE=~/.ssh/config
- START="added from org-document org-primer.org - start"
- END="added from org-document org-primer.org - end"
-
- echo "modifying $FILE on host '$(hostname)'"
-
- sed -i -e "/$START/,/$END/d" $FILE
-
- cat <<HERE | tee -a $FILE
- # $START
- host org_primer_demo
-      user pi
-      IdentityFile ~/.ssh/id_rsa
-      hostname 192.168.110.150
- # $END
- HERE
-
- #+END_SRC
-
- #+RESULTS:
- : modifying /home/jj/.ssh/config on host 'eero'
- : # added from org-document org-primer.org - start
- : host org_primer_demo
- :      user pi
- :      IdentityFile ~/.ssh/id_rsa
- :      hostname 192.168.110.150
- : # added from org-document org-primer.org - end
+#+RESULTS: tramp-greeting
+: Greetings to world from eero on ti 6.6.2023 09.01.30 +0300
 
 
- Create named source block ~tramp-greeting~, and evaluate it with ~C-c
- C-c~. Expect that greeting is executed on your own host.
+*Exercise* call source block using ~:dir /ssh:org_primer_demo:~
+-directive, created above. Pass variable ~WHOM="moon"~ to the
+block. Expect to see greeting executed on ssh -alias machine.
 
- #+name: tramp-greeting
- #+BEGIN_SRC bash :eval no-export :results output :var WHOM="world"
- echo Greetings to $WHOM from $(hostname) on $(date)
- #+END_SRC
+#+call: tramp-greeting[:dir /ssh:org_primer_demo:](WHOM="moon")
 
- #+RESULTS: tramp-greeting
- : Greetings to world from eero on ma 5.6.2023 14.57.09 +0300
-
-
- *Exercise* Distribute your ssh -identity referenced in the alias
- (=~/.ssh/id_rsa=) machine in ~$IP~ -address, e.g. using
- a command such as
-
- #+begin_example
- ssh-copy-id -i ~/.ssh/id_rsa pi@$IP
- #+end_example
-
- *Exercise* call source block using ~:dir /ssh:org_primer_demo:~
- -directive. Pass variable ~WHOM="moon"~ to the block. Expect to see
- greeting executed on alias machine.
-
- #+call: tramp-greeting[:dir /ssh:org_primer_demo:](WHOM="moon")
-
- #+RESULTS:
- : Greetings to moon from welleri on Mon Jun 5 14:57:19 EEST 2023
+#+RESULTS:
+: Greetings to moon from jrr1 on Tue Jun 6 09:02:48 EEST 2023
 
 *** Remote file access 
 
-Follow link: [[file:tmp]] to open directory tmp on local machine
+Follow link: [[file:./tmp]] (= ~C-c C-o~ OR ~C-u C-c C-o~ if the shorter
+version complaints that it is using ~less~ for opening) to open
+~dired~ mode view of directory ~tmp~ on your local machine.
 
-Follow link: [[/ssh:org_primer_demo:]] open home directory of alias uses
-pointed by ~org_primer_demo~ ssh -alias. You may open files and edit
-those files "in a  normal way"
+*Hint*: Help on using ~Dired*: ~h M~ in ~dired~ window, e.f.  ~f~ -key
+opens file in a file buffer.
+
+
+Follow link: [[/ssh:org_primer_demo]] (= ~C-c C-o~ should work allways,
+because emacs because the linktype does not associate with ~less~
+command ) to open home directory on ssh alias ~org_primer_demo~. In
+the ~dired~ buffer you may open files and edit files, as hinted above.
 
 *** Local and remote shell
 
@@ -1041,13 +1117,39 @@ directory. Close the shell with ~C-x k~ (which buffer to close
 (=*shell*=), asks for confirmation.
 
 
-Follow link: [[/ssh:org_primer_demo:]] to open home directory of alias
-uses pointed by ~org_primer_demo~ ssh -alias. In that remote buffer
-run ~M-x shell RET~ to open remote eshell.
+Follow link: [[/ssh:org_primer_demo:]] (~C-c C-o~) to open home directory
+of ssh alias ~org_primer_demo~. In the ~dired~ -buffer run ~M-x shell
+RET~ to open remote eshell.
 
 
 
+*** Launching remote terminal
 
+#+BEGIN_SRC bash :eval no-export :results output
+echo IP=$IP
+#+END_SRC
+
+#+RESULTS:
+: IP=192.168.100.102
+
+Following one-liner ;) opens xterm window running ssh session on
+~org_primer_demo~ ssh alias. This ssh -session tails syslog on that
+remote machine. 
+
+
+
+#+name: syslog-tail
+#+BEGIN_SRC elisp :noweb yes :results output :eval no-export :exports none 
+(start-process "server" "buf-server" "xterm"  "-T" "syslog@org_primer_demo" "-hold" "-e"  "bash" "-c" "ssh org_primer_demo tail -f /var/log/syslog")
+#+END_SRC
+
+#+RESULTS: syslog-tail
+
+Agree, that the source block above is somewhat complicated, to say the
+least, but pressing ~C-c C-c~ key combination, replaces a longer
+alternative of launching terminal window, and typing ssh -command. In
+addition, this having commands like this adeuately documented helps
+future you,or somebody else, in maintaining system in the future.
 
 ** Hint: Some pointers for digging deeper into the Emacs universe
 

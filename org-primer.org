@@ -634,6 +634,8 @@ HERE
 
 #+end_src
 
+*Notice*, how string values assigned to ~START~ and ~STOP~ variables
+use lisp language to automatically add name of the document.
 
 #+call: yas-reload()
 
@@ -642,7 +644,7 @@ HERE
 
 Testing it
 
-First create a file
+First create a file ~tmp/src-sed-demo.txt~ with one line of text
 #+BEGIN_SRC bash :eval no-export :results output
 echo Exampele file for using src-sed yas-snippet >tmp/src-sed-demo.txt
 #+END_SRC
@@ -650,13 +652,11 @@ echo Exampele file for using src-sed yas-snippet >tmp/src-sed-demo.txt
 #+RESULTS:
 
 
-The source block below was created by typing ~src-sed RET~. 
-
 *Exercise* modify text inside ~HERE~ document, and rerun the source
 block below. Expect to see file content wrapped inside ~START-END~
 lines to change.
 
-#+BEGIN_SRC bash :eval no-export :results output
+#+BEGIN_SRC bash :eval no-export :results output :exports code
 FILE=tmp/src-sed-demo.txt
 START="added from org-document org-primer.org - start"
 END="added from org-document org-primer.org - end"
@@ -687,9 +687,9 @@ HERE
 : - or shell expansions hostname: eero, date: ti 6.6.2023 08.58.48 +0300
 : # added from org-document org-primer.org - end
 
-Show content of demo file ~tmp/src-sed-demo.txt~
+Show content of demo file ~tmp/src-sed-demo.txt~. 
 
-#+BEGIN_SRC bash :eval no-export :results output
+#+BEGIN_SRC bash :eval no-export :results output :exports both
 cat tmp/src-sed-demo.txt
 #+END_SRC
 
@@ -1024,25 +1024,27 @@ Try:
 
 *** ~org_primer_demo~ ssh -alias: Enable ssh access to remote IP
 
-
 *Exercise* Distribute your ssh -identity to the machine on IP address.
 For example, to copy ssh identity =~/.ssh/id_rsa= to ~$IP~ -address
-with user ~pi~ use a command.
-
-*Notice* We need to run ~ssh-copy-id~ -command using a normal terminal
-window, because ssh asks for credentials, which must be entered from
-keyboard.
+with user ~pi~ use a command in a terminal window:
 
 #+begin_example
 ssh-copy-id -i ~/.ssh/id_rsa pi@$IP
 #+end_example
 
-Source block below creates a ssh -alias ~org_primer_demo~ in
-~/.ssh/config~ -file. Modifications are wrapped within ~START-END~.
+*Notice* We need to run ~ssh-copy-id~ -command using a normal terminal
+window, because ssh asks for credentials, which must be entered from
+keyboard.
 
-*Exercise* modify ssh-identity address in the source block block (IP
--address is taken from ~$IP~ -property, configured above). Evaluate
-the source block to create ssh alias ~org_primer_demo~
+The following source block was created using ~src-sed~ yas-snippet
+presented earlier in this primer.  It creates a ssh -alias
+~org_primer_demo~ in ~/.ssh/config~ -file. Modifications to this file
+are wrapped within ~START-END~ block.
+
+*Exercise* Check, and modify if needed, ~IdentityFile~ -property to
+match the identity copied above.  We assume that IP addess was
+validated already earlier. Evaluate the source block to create ssh
+-alias ~org_primer_demo~:
 
 #+BEGIN_SRC bash :eval no-export :results output
 FILE=~/.ssh/config
@@ -1073,6 +1075,8 @@ HERE
 :      hostname 192.168.100.102
 : # added from org-document org-primer.org - end
 
+Proceed to next section to test ssh -alias.
+
 *** Run source block in a remote machine
 
 Emacs comes bundled with TRAMP https://www.gnu.org/software/tramp/
@@ -1098,7 +1102,8 @@ echo Greetings to $WHOM from $(hostname) on $(date)
 
 *Exercise* call source block using ~:dir /ssh:org_primer_demo:~
 -directive, created above. Pass variable ~WHOM="moon"~ to the
-block. Expect to see greeting executed on ssh -alias machine.
+block. Expect to see greeting to moon run on ~org_primer_demo~ -alias
+machine.
 
 #+call: tramp-greeting[:dir /ssh:org_primer_demo:](WHOM="moon")
 
@@ -1108,12 +1113,12 @@ block. Expect to see greeting executed on ssh -alias machine.
 *** Remote file access 
 
 Follow link: [[file:./tmp]] (= ~C-c C-o~ OR ~C-u C-c C-o~ if the shorter
-version complaints that it is using ~less~ for opening) to open
-~dired~ mode view of directory ~tmp~ on your local machine.
+version fails e.g. tries to use ~less~ for opening the link) to open
+~dired~ view of directory ~tmp~ on your local machine.
 
-*Hint*: Help on using ~Dired*: ~h M~ in ~dired~ window, e.f.  ~f~ -key
-opens file in a file buffer.
-
+*Hint*: Help on using ~Dired*: ~h M~ in ~dired~ window. Some important keys:
+- ~f~  open file in emacs 
+- ~W~  open file using system default application
 
 Follow link: [[/ssh:org_primer_demo]] (= ~C-c C-o~ should work allways,
 because emacs because the linktype does not associate with ~less~

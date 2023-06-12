@@ -15,7 +15,7 @@ structure and the parts currently being worked on.
 This document gives an opinionated short introduction to org-mode in
 emacs. For Help/more documentation for org-mode:
 - C-h M : short description and (an overwheling list of key bindings -
-  not all of the actually that usefull )
+  not all of the actually that useful )
 - C-h I : search/user cursor to line with 'Org Mode' 
 
 *This primer assumes that it is run in empty emacs content*
@@ -51,6 +51,52 @@ Org mode implements simple formatting:
 - equal -signs around the text marks also =code= format
 - /italics/ with slash characters 
 - *bold* with asterisks 
+
+** Un-ordered Lists and checkboxes
+
+- Unordered list items start with 
+  1) - -character OR
+  2) + -character OR
+  3) * -character. Notice: when using ‘*’ as a bullet, lines must be
+     indented so that they are not interpreted as headlines
+- Ordered list items start with a numeral followed by either
+  - a period, such as 1.
+  - or a right parenthesis, for example 1)
+- Description list ::  items are unordered list items, and contain the
+  separator ‘::’ to distinguish the description term from the
+  description.
+
+Some keyboard shortcuts to manage list entries
+- A new list entry can be created using ~M-TAB~ at the end list entry
+  line.
+- ~M-RightArrow~  and ~M-LeftArraw~ :: demote or promote list entry
+  (=same key combination, which work on topic lines)
+
+To read more about lists in emacs org follow the link
+https://orgmode.org/manual/Plain-Lists.html (~C-c C-o~)
+
+An unordered list entry (i.e. line starting with -, +, * -character)
+can be converted to checkbox using ~SHIFT-M-RET~ key
+combination. Checkboxes are useful as lighweight TODO -lists.
+
+On a bottom level check box line ~C-c C-c~ toggles checkbox ~[X]/[ ]~
+and propagates checkbox status to checkboxes on the upper level.
+
+*Exercise*: Use ~C-c C-c~ on the checkbox list below to mark your
+progress on your way towards mastering emacs.
+
+- [ ] To master emacs
+  - [ ] familiarize yourself with the emacs key binding (e.g. by
+    reading [[file:emacs-primer.org]])
+  - [ ] familiarize yourself with the emacs org mode (e.g. by reading
+    [[file:org-primer.org]] = this document)
+  - [ ] create your own emacs configuration (e.g. using
+    [[file:emacs-admin.org]] as an example)
+
+
+
+
+To read more about checkboxes https://orgmode.org/manual/Checkboxes.html
 
 ** emacs speaks natively lisp, org-mode implements source-blocks
 Natively emacs speaks only lisp. Other languages need to be activated,
@@ -96,7 +142,6 @@ to the Moon.
 
 #+call: hello-whom(WHOM="Moon")
 
-
 ** ~org-confirm-babel-evaluate~: confirmation in source block evaluation 
 
 Emacs use various configuration variables to change its behaviour. For
@@ -127,7 +172,6 @@ evaluation is not required anymore.
 #+RESULTS:
 : Hello again
 
-
 ** ~describe-variable~ et. al: Find documentation
 
 You may show variable documentation using ~C-h v~ keyboard sequence.
@@ -150,7 +194,7 @@ documentation for ~org-confirm-babel-evaluate~ -variable.
 (describe-variable 'org-confirm-babel-evaluate)
 #+END_SRC
 
-** Some usefull (=essential?) emacs confgurations
+** Some useful (=essential?) emacs confgurations
 
 Following lisp snippet instructs emacs
 - not to make backup files
@@ -264,7 +308,6 @@ emacs in tmp directory (and, especially, *that it does not point to to
  #+BEGIN_SRC elisp
  user-emacs-directory
  #+END_SRC
-
 
 ** Basic emacs configuration
 *** ~use-package~: isolate package configurations
@@ -536,6 +579,25 @@ block for running shell scripts within emacs.
 
 Try it below
 src-bash
+**** ~src-bash-sudo~: enable sudo command on shell source blocks
+
+
+A yas-snippet to enable sudo commands in source blocks:
+
+ #+begin_src txt :tangle tmp/snippets/org-mode/src-bash-sudo
+ # -*- mode: snippet -*-
+ # name: src-bash-sudo
+ # key: src-bash-sudo
+ # --
+
+
+ #+BEGIN_SRC bash :eval no-export :results output  :dir /sudo::
+ $0
+ ,#+END_SRC
+ #+end_src
+
+
+
 
 **** ~src-lisp~: snippet to run lisp function
 
@@ -709,7 +771,7 @@ In this primer, we have been tangling snippets and reloading them
 separately, mainly for two reasons
 - to minimize external depencies in this document 
 - to demonstrate the possiblity to create files from
-  org-documents. This may be usefull, for example, when building
+  org-documents. This may be useful, for example, when building
   embedded systems, which may be lacking editor support.
 
 Normally, we would browse snippet directory, edit snippets in place,
@@ -894,6 +956,8 @@ Try:
 
 ** Example: Source block directives: dir
 
+*** ~:dir~ -directive changes directory
+
  Define source named source block ~pwd-ls~, which outputs current
  working directory and show its content.
 
@@ -986,6 +1050,52 @@ Try:
  : drwxrwxr-x  3 jj jj     3 kesä    5 13:39 snippets
  : -rw-rw-r--  1 jj jj   400 kesä    6 08:58 src-sed-demo.txt
  : -rw-rw-r--  1 jj jj   718 kesä    6 08:56 tramp
+
+*** ~:dir~ -directive to run sudo
+
+~:dir~ -directive is useful for system management, when enables sudo
+command to be executed from source block.
+
+*Exercise*: Try to evaluate (~C-c C-c~) the bash source block below
+with a sudo command. Notice, how it reports an error due to failure to
+read password.
+
+#+BEGIN_SRC bash :eval no-export :results output
+sudo pwd
+#+END_SRC
+
+#+RESULTS:
+
+
+A source block created using ~src-bash-sudo~ for the
+password. 
+
+*Exercise* Run the following bash source block with ~:dir /sudo::~
+-header directive, enter your sudo password, and notice the resulting
+directory ~/root~
+
+#+BEGIN_SRC bash :eval no-export :results output  :dir /sudo::
+sudo pwd
+#+END_SRC
+
+*Exercise* Run the the bash source block above (=with ~:dir /sudo::~
+-header directive), and notice that sudo password is remembered.
+
+*Exercise* Run the following bash source block without the ~:dir
+/sudo::~ -header directive, and notice it results current working
+directory as the location of this file (~org-primer.org~)
+
+
+#+BEGIN_SRC bash :eval no-export :results output
+pwd
+ls -l org-primer.org
+#+END_SRC
+
+#+RESULTS:
+: /home/jj/work/emacs-tut
+: -rw-rw-r-- 1 jj jj 36755 kesä   12 08:54 org-primer.org
+
+
 
 ** Example: ~tramp~: remote access over ssh
     :PROPERTIES:

@@ -1,3 +1,8 @@
+2023-06-12  jj  <jj@eero>
+
+	* org-primer.org (Un-ordered Lists and checkboxes): Added
+	(~:dir~ -directive to run sudo): added
+
 2023-06-06  jj  <jj@eero>
 
 	* emacs-admin.org (~yasnippet~ -  template system for emacs): tangle no added
